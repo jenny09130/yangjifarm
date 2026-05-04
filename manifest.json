@@ -1,0 +1,18 @@
+{
+  "name": "養肌農場 — 肌少症運動遊戲",
+  "short_name": "養肌農場",
+  "description": "12週農耕遊戲化肌少症運動介入系統",
+  "start_url": "./養肌農場.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF3E0",
+  "theme_color": "#3D8B37",
+  "lang": "zh-TW",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["health", "fitness", "games"],
+  "screenshots": [],
+  "share_target": null
+}

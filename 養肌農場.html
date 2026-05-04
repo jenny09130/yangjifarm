@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>養肌農場 🌱 肌少症運動遊戲</title>
+<!-- PWA Meta Tags -->
+<meta name="theme-color" content="#3D8B37">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="養肌農場">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<!-- Apple Touch Icons (SVG inline fallback — real deploy needs PNG) -->
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --green-dark: #3D8B37;
+  --green-mid: #5CB85C;
+  --green-light: #A8D5A2;
+  --soil: #8B5E3C;
+  --soil-light: #C4915A;
+  --gold: #FFB800;
+  --orange: #FF7043;
+  --sky: #87CEEB;
+  --cream: #FFFBF0;
+  --warm-bg: #FFF3E0;
+  --text-dark: #2C3E50;
+  --text-mid: #5D6D7E;
+  --red: #E53935;
+  --blue: #1976D2;
+  --purple: #7B1FA2;
+  --radius: 18px;
+  --shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--warm-bg);
+  font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+  color: var(--text-dark);
+  overflow: hidden;
+}
+
+.screen { position: fixed; inset: 0; display: flex; flex-direction: column; }
+.hidden { display: none !important; }
+
+/* ─── TITLE SCREEN ─── */
+#screen-title {
+  background: linear-gradient(160deg, #B8E6A0 0%, #7CC87A 40%, #4A9E5C 100%);
+  justify-content: center; align-items: center; gap: 24px; padding: 32px;
+}
+.title-sun {
+  width: 90px; height: 90px; background: #FFD700;
+  border-radius: 50%; position: absolute; top: 40px; right: 40px;
+  box-shadow: 0 0 0 16px rgba(255,215,0,0.25), 0 0 0 32px rgba(255,215,0,0.1);
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+.title-cloud {
+  position: absolute; background: white; border-radius: 50px;
+  opacity: 0.85; animation: drift 8s linear infinite;
+}
+@keyframes drift { from{transform:translateX(-120px)} to{transform:translateX(calc(100vw + 120px))} }
+.title-logo { font-size: 52px; }
+.title-h1 {
+  font-size: 38px; font-weight: 900; color: #fff;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.25); text-align: center; line-height: 1.2;
+}
+.title-sub {
+  font-size: 18px; color: rgba(255,255,255,0.9); text-align: center;
+  background: rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 30px;
+}
+.title-badge {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+}
+.badge {
+  background: rgba(255,255,255,0.9); border-radius: 30px;
+  padding: 8px 16px; font-size: 14px; font-weight: 700; color: var(--green-dark);
+}
+.btn-start {
+  background: var(--orange); color: white;
+  font-size: 28px; font-weight: 900;
+  padding: 18px 60px; border-radius: 60px; border: none; cursor: pointer;
+  box-shadow: 0 6px 20px rgba(255,112,67,0.45);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-start:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(255,112,67,0.3); }
+.evidence-note {
+  font-size: 13px; color: rgba(255,255,255,0.75); text-align: center;
+  max-width: 340px;
+}
+
+/* ─── TOP BAR ─── */
+#top-bar {
+  background: linear-gradient(90deg, #3D8B37, #5CB85C);
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2); flex-shrink: 0;
+}
+.top-stat {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.2); border-radius: 20px;
+  padding: 5px 12px;
+}
+.top-stat .icon { font-size: 18px; }
+.top-stat .val { font-size: 17px; font-weight: 700; color: white; }
+.top-stat .lbl { font-size: 12px; color: rgba(255,255,255,0.8); }
+.spacer { flex: 1; }
+.btn-top {
+  background: rgba(255,255,255,0.25); border: none; color: white;
+  font-size: 22px; padding: 6px 10px; border-radius: 12px; cursor: pointer;
+}
+
+/* ─── FARM SCREEN ─── */
+#screen-farm { background: var(--warm-bg); }
+#farm-main { flex: 1; overflow-y: auto; padding: 12px; }
+
+.section-title {
+  font-size: 18px; font-weight: 800; color: var(--green-dark);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+
+/* Week progress bar */
+#week-bar {
+  background: white; border-radius: var(--radius); padding: 14px 16px;
+  margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.week-label { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
+.week-phases { display: flex; gap: 4px; margin-bottom: 6px; }
+.phase-block {
+  flex: 1; height: 10px; border-radius: 10px; opacity: 0.4;
+  transition: opacity 0.3s;
+}
+.phase-block.active { opacity: 1; }
+.phase-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-mid); }
+
+/* Farm grid */
+#farm-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 12px;
+}
+.plot {
+  background: linear-gradient(160deg, #C4915A, #8B5E3C);
+  border-radius: 16px; aspect-ratio: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; position: relative; overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.1s, box-shadow 0.1s;
+  border: 3px solid rgba(255,255,255,0.15);
+  user-select: none;
+}
+.plot:active { transform: scale(0.94); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+.plot.empty { background: linear-gradient(160deg, #C4915A, #8B5E3C); }
+.plot.planted { background: linear-gradient(160deg, #8B5E3C, #6B3F1F); }
+.plot.growing { background: linear-gradient(160deg, #6B8F3C, #8B5E3C); }
+.plot.ready {
+  background: linear-gradient(160deg, #5CB85C, #3D8B37);
+  animation: glow 1.5s ease-in-out infinite;
+}
+@keyframes glow {
+  0%,100%{box-shadow:0 4px 10px rgba(0,0,0,0.2), 0 0 0 0 rgba(92,184,92,0.4)}
+  50%{box-shadow:0 4px 10px rgba(0,0,0,0.2), 0 0 0 8px rgba(92,184,92,0)}
+}
+.plot.locked {
+  background: linear-gradient(160deg, #aaa, #888); cursor: default; opacity: 0.6;
+}
+.plot-emoji { font-size: 32px; line-height: 1; }
+.plot-name { font-size: 11px; font-weight: 700; color: white; margin-top: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+.plot-days {
+  position: absolute; bottom: 5px; right: 7px;
+  font-size: 11px; font-weight: 700; color: white;
+  background: rgba(0,0,0,0.35); border-radius: 8px; padding: 1px 5px;
+}
+.plot-action {
+  position: absolute; top: 5px; left: 5px;
+  font-size: 10px; font-weight: 700; color: white;
+  background: var(--orange); border-radius: 8px; padding: 2px 6px;
+}
+.plot-ready-badge {
+  position: absolute; top: 4px; right: 4px;
+  font-size: 14px; animation: bounce 0.8s ease-in-out infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+.plot-progress {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 4px; background: rgba(255,255,255,0.25);
+}
+.plot-progress-fill {
+  height: 100%; background: var(--gold);
+  border-radius: 0 0 14px 14px; transition: width 0.3s;
+}
+
+/* Tasks panel */
+#tasks-panel {
+  background: white; border-radius: var(--radius); padding: 14px 16px;
+  margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.task-list { display: flex; flex-direction: column; gap: 8px; }
+.task-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--warm-bg); border-radius: 12px; padding: 10px 14px;
+  border: 2px solid transparent;
+}
+.task-item.done { border-color: var(--green-mid); background: #F0FFF0; }
+.task-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+.task-text { flex: 1; font-size: 15px; font-weight: 600; }
+.task-reps { font-size: 13px; color: var(--text-mid); }
+.task-check { font-size: 20px; }
+
+/* Bottom nav */
+#bottom-nav {
+  background: white; display: flex; border-top: 2px solid #F0F0F0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  flex-shrink: 0;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 4px; border: none; background: none; cursor: pointer;
+  font-size: 11px; color: var(--text-mid); font-weight: 600; gap: 3px;
+  transition: color 0.2s;
+}
+.nav-btn .nav-icon { font-size: 26px; }
+.nav-btn.active { color: var(--green-dark); }
+
+/* ─── MODAL OVERLAY ─── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 100; padding: 16px;
+}
+.modal-card {
+  background: white; border-radius: 28px 28px 28px 28px;
+  width: 100%; max-width: 480px; padding: 28px 24px;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+  animation: slideUp 0.25s ease-out;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes slideUp { from{transform:translateY(80px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-header { text-align: center; margin-bottom: 20px; }
+.modal-emoji { font-size: 56px; display: block; margin-bottom: 8px; }
+.modal-title { font-size: 26px; font-weight: 900; color: var(--text-dark); }
+.modal-sub { font-size: 16px; color: var(--text-mid); margin-top: 4px; }
+
+.exercise-info {
+  background: var(--warm-bg); border-radius: 16px; padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.exercise-name { font-size: 22px; font-weight: 900; color: var(--green-dark); margin-bottom: 6px; }
+.exercise-detail { font-size: 15px; color: var(--text-mid); line-height: 1.5; }
+.exercise-evidence {
+  font-size: 12px; color: var(--blue); margin-top: 8px;
+  background: #E3F2FD; border-radius: 8px; padding: 6px 10px;
+}
+
+.rep-display {
+  text-align: center; margin-bottom: 20px;
+}
+.rep-counter {
+  font-size: 72px; font-weight: 900; color: var(--green-dark);
+  line-height: 1; display: block;
+}
+.rep-target { font-size: 18px; color: var(--text-mid); }
+.rep-bar-wrap {
+  height: 16px; background: #E0E0E0; border-radius: 10px;
+  overflow: hidden; margin: 12px 0 6px;
+}
+.rep-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--green-mid), var(--green-dark));
+  border-radius: 10px; transition: width 0.2s;
+}
+
+.btn-rep {
+  width: 100%; background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+  color: white; font-size: 22px; font-weight: 900;
+  padding: 18px; border-radius: 20px; border: none; cursor: pointer;
+  box-shadow: 0 5px 15px rgba(61,139,55,0.4);
+  transition: transform 0.1s; margin-bottom: 10px;
+}
+.btn-rep:active { transform: scale(0.97); }
+.btn-rep:disabled {
+  background: linear-gradient(135deg, var(--green-dark), #2D6B28);
+  cursor: default;
+}
+.btn-cancel {
+  width: 100%; background: #F5F5F5; color: var(--text-mid);
+  font-size: 18px; font-weight: 700; padding: 14px;
+  border-radius: 16px; border: none; cursor: pointer;
+}
+
+/* ─── SHOP SCREEN ─── */
+#screen-shop { background: var(--warm-bg); }
+.shop-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 12px;
+}
+.shop-card {
+  background: white; border-radius: 20px; padding: 18px 14px;
+  text-align: center; box-shadow: var(--shadow); cursor: pointer;
+  border: 3px solid transparent; transition: border-color 0.2s, transform 0.1s;
+  position: relative;
+}
+.shop-card:active { transform: scale(0.97); }
+.shop-card.tier1 { border-color: #A5D6A7; }
+.shop-card.tier2 { border-color: #FFE082; }
+.shop-card.tier3 { border-color: #EF9A9A; }
+.shop-emoji { font-size: 40px; margin-bottom: 8px; display: block; }
+.shop-name { font-size: 16px; font-weight: 800; color: var(--text-dark); }
+.shop-info { font-size: 13px; color: var(--text-mid); margin: 4px 0; }
+.shop-price {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #FFF8E1; border-radius: 20px; padding: 5px 12px;
+  font-size: 16px; font-weight: 900; color: #E65100; margin-top: 8px;
+}
+.shop-tier-badge {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 10px;
+}
+.tier1 .shop-tier-badge { background: #E8F5E9; color: var(--green-dark); }
+.tier2 .shop-tier-badge { background: #FFF8E1; color: #E65100; }
+.tier3 .shop-tier-badge { background: #FCE4EC; color: #C62828; }
+.shop-locked { opacity: 0.45; cursor: not-allowed; }
+.shop-locked::after {
+  content: "🔒"; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; background: rgba(255,255,255,0.6); border-radius: 17px;
+}
+
+/* ─── ACHIEVEMENTS SCREEN ─── */
+#screen-achievements { background: var(--warm-bg); }
+.achieve-list { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.achieve-card {
+  background: white; border-radius: 20px; padding: 16px 18px;
+  display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow);
+  border-left: 6px solid #E0E0E0;
+}
+.achieve-card.unlocked { border-left-color: var(--gold); }
+.achieve-icon { font-size: 40px; flex-shrink: 0; }
+.achieve-info { flex: 1; }
+.achieve-title { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+.achieve-desc { font-size: 14px; color: var(--text-mid); margin-top: 2px; }
+.achieve-reward { font-size: 13px; color: var(--orange); font-weight: 700; margin-top: 4px; }
+.achieve-status { font-size: 22px; }
+.achieve-progress-wrap { margin-top: 6px; }
+.achieve-prog-bar {
+  height: 8px; background: #E0E0E0; border-radius: 10px; overflow: hidden;
+}
+.achieve-prog-fill { height: 100%; background: var(--gold); border-radius: 10px; }
+.achieve-prog-text { font-size: 12px; color: var(--text-mid); margin-top: 3px; }
+
+/* ─── PROGRESS SCREEN ─── */
+#screen-progress { background: var(--warm-bg); }
+.progress-cards { padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+.prog-card {
+  background: white; border-radius: 20px; padding: 18px;
+  box-shadow: var(--shadow);
+}
+.prog-card-title { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.stat-label { font-size: 15px; color: var(--text-mid); }
+.stat-value { font-size: 15px; font-weight: 700; color: var(--text-dark); }
+.exercise-hist { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.ex-hist-row { display: flex; align-items: center; gap: 10px; }
+.ex-hist-label { font-size: 14px; color: var(--text-dark); width: 80px; flex-shrink: 0; }
+.ex-hist-bar-wrap { flex: 1; height: 14px; background: #F0F0F0; border-radius: 10px; overflow: hidden; }
+.ex-hist-bar { height: 100%; border-radius: 10px; }
+.ex-hist-count { font-size: 13px; font-weight: 700; color: var(--text-mid); width: 36px; text-align: right; }
+
+/* ─── TOAST ─── */
+#toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(30,30,30,0.88); color: white;
+  padding: 12px 24px; border-radius: 30px; font-size: 16px; font-weight: 600;
+  z-index: 200; opacity: 0; transition: all 0.3s; pointer-events: none;
+  white-space: nowrap; max-width: 90vw;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─── COIN ANIMATION ─── */
+.coin-pop {
+  position: fixed; pointer-events: none; z-index: 150;
+  font-size: 22px; font-weight: 900; color: var(--gold);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  animation: coinFly 1s ease-out forwards;
+}
+@keyframes coinFly {
+  0%  { opacity: 1; transform: translateY(0) scale(1); }
+  100%{ opacity: 0; transform: translateY(-70px) scale(1.3); }
+}
+
+/* Scrollable content areas */
+.scroll-content { flex: 1; overflow-y: auto; }
+
+/* ─── PWA INSTALL BANNER ─── */
+#install-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: linear-gradient(135deg, #1B5E20, #2E7D32);
+  color: white; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+#install-banner.show { transform: translateY(0); }
+#install-banner .banner-icon { font-size: 36px; flex-shrink: 0; }
+#install-banner .banner-text { flex: 1; }
+#install-banner .banner-title { font-size: 16px; font-weight: 900; }
+#install-banner .banner-sub   { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+.btn-install {
+  background: white; color: #1B5E20;
+  font-size: 15px; font-weight: 900;
+  padding: 10px 18px; border-radius: 20px; border: none; cursor: pointer;
+  flex-shrink: 0; white-space: nowrap;
+}
+.btn-banner-close {
+  background: none; border: none; color: rgba(255,255,255,0.7);
+  font-size: 22px; cursor: pointer; padding: 4px; flex-shrink: 0;
+}
+
+/* ─── SENSOR UI ─── */
+.sensor-panel {
+  background: #F3F8F3; border: 2px solid var(--green-light);
+  border-radius: 16px; padding: 14px 16px; margin-bottom: 14px;
+}
+.sensor-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.sensor-dot {
+  width: 12px; height: 12px; border-radius: 50%; background: #ccc;
+  transition: background 0.2s;
+}
+.sensor-dot.active { background: #4CAF50; box-shadow: 0 0 0 4px rgba(76,175,80,0.25); animation: blink 1s ease-in-out infinite; }
+.sensor-dot.error  { background: #F44336; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.sensor-status { font-size: 14px; font-weight: 700; color: var(--text-dark); flex: 1; }
+.sensor-mode-tag {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 10px;
+  background: #E8F5E9; color: var(--green-dark);
+}
+.sensor-mode-tag.manual { background: #FFF3E0; color: #E65100; }
+
+/* Waveform canvas */
+#sensor-canvas {
+  width: 100%; height: 70px; border-radius: 10px;
+  background: #1A1A2E; display: block;
+}
+.sensor-readings {
+  display: flex; gap: 8px; margin-top: 8px;
+}
+.sensor-axis {
+  flex: 1; background: white; border-radius: 10px; padding: 7px 10px; text-align: center;
+}
+.axis-val { font-size: 18px; font-weight: 900; }
+.axis-lbl { font-size: 11px; color: var(--text-mid); }
+
+.btn-sensor {
+  width: 100%; background: linear-gradient(135deg, #1565C0, #42A5F5);
+  color: white; font-size: 18px; font-weight: 800;
+  padding: 14px; border-radius: 16px; border: none; cursor: pointer;
+  margin-bottom: 8px; transition: transform 0.1s;
+}
+.btn-sensor:active { transform: scale(0.97); }
+.btn-sensor:disabled { opacity: 0.5; cursor: default; }
+
+.rep-feedback {
+  text-align: center; font-size: 16px; font-weight: 700;
+  padding: 8px; border-radius: 12px; margin-bottom: 10px;
+  min-height: 40px; display: flex; align-items: center; justify-content: center;
+}
+.rep-feedback.good  { background: #E8F5E9; color: var(--green-dark); }
+.rep-feedback.wait  { background: #FFF3E0; color: #E65100; }
+.rep-feedback.ready { background: #E3F2FD; color: var(--blue); }
+
+.mode-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.mode-tab {
+  flex: 1; padding: 10px; border-radius: 12px; border: 2px solid #E0E0E0;
+  background: white; font-size: 14px; font-weight: 700; cursor: pointer;
+  color: var(--text-mid); transition: all 0.2s;
+}
+.mode-tab.active { border-color: var(--green-mid); color: var(--green-dark); background: #F0FFF0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TITLE SCREEN ══════════════ -->
+<div id="screen-title" class="screen">
+  <div class="title-sun"></div>
+  <div class="title-cloud" style="width:100px;height:40px;top:90px;animation-delay:0s;animation-duration:12s"></div>
+  <div class="title-cloud" style="width:70px;height:30px;top:140px;animation-delay:-5s;animation-duration:9s"></div>
+
+  <div class="title-logo">🌾</div>
+  <div class="title-h1">養肌農場</div>
+  <div class="title-sub">邊農耕、邊復健，打造強健肌肉</div>
+
+  <div class="title-badge">
+    <span class="badge">💪 阻力訓練</span>
+    <span class="badge">⚖️ 平衡訓練</span>
+    <span class="badge">🏃 有氧運動</span>
+    <span class="badge">✋ 精細動作</span>
+  </div>
+
+  <button class="btn-start" onclick="startGame()">開始遊戲 🌱</button>
+
+  <div class="evidence-note">
+    依據 Tan et al. (2026)、Bae et al. (2025) 等肌少症實證處方設計<br>
+    每週 2–3 次 × 每次 30–40 分鐘 × 12 週課程
+  </div>
+</div>
+
+<!-- ══════════════ FARM SCREEN ══════════════ -->
+<div id="screen-farm" class="screen hidden">
+  <!-- Top Bar -->
+  <div id="top-bar">
+    <div class="top-stat">
+      <span class="icon">🪙</span>
+      <div>
+        <div class="val" id="gold-display">0</div>
+        <div class="lbl">農金幣</div>
+      </div>
+    </div>
+    <div class="top-stat">
+      <span class="icon">📅</span>
+      <div>
+        <div class="val" id="day-display">第1天</div>
+        <div class="lbl">週<span id="week-display">1</span>/12</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="top-stat">
+      <span class="icon">💪</span>
+      <div>
+        <div class="val" id="muscle-display">Lv.1</div>
+        <div class="lbl">肌力</div>
+      </div>
+    </div>
+    <button class="btn-top" onclick="showScreen('shop')" title="種子商店">🛒</button>
+  </div>
+
+  <div class="scroll-content" id="farm-main">
+    <!-- Week Progress -->
+    <div id="week-bar" style="margin:12px 12px 0">
+      <div class="week-label" id="phase-label">第一階段：適應期（第1–4週）</div>
+      <div class="week-phases" id="week-phases"></div>
+      <div class="phase-labels">
+        <span>適應期 W1</span><span>展期 W5</span><span>整合期 W9</span><span>W12</span>
+      </div>
+    </div>
+
+    <!-- Farm Grid -->
+    <div style="padding:12px">
+      <div class="section-title">🌿 我的農場</div>
+      <div id="farm-grid"></div>
+
+      <!-- Daily Tasks -->
+      <div id="tasks-panel">
+        <div class="section-title">📋 今日運動任務</div>
+        <div class="task-list" id="task-list"></div>
+        <div style="font-size:12px;color:var(--text-mid);margin-top:8px;line-height:1.5">
+          💡 點擊農場格子開始運動任務，完成動作即可種植、澆水或採收作物！
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div id="bottom-nav">
+    <button class="nav-btn active" id="nav-farm" onclick="showScreen('farm')">
+      <span class="nav-icon">🌾</span>農場
+    </button>
+    <button class="nav-btn" id="nav-shop" onclick="showScreen('shop')">
+      <span class="nav-icon">🛒</span>商店
+    </button>
+    <button class="nav-btn" id="nav-achievements" onclick="showScreen('achievements')">
+      <span class="nav-icon">🏆</span>成就
+    </button>
+    <button class="nav-btn" id="nav-progress" onclick="showScreen('progress')">
+      <span class="nav-icon">📊</span>進度
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════ SHOP SCREEN ══════════════ -->
+<div id="screen-shop" class="screen hidden">
+  <div id="top-bar-shop" style="background:linear-gradient(90deg,#E65100,#FF8A65);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+    <button onclick="showScreen('farm')" style="background:rgba(255,255,255,0.25);border:none;color:white;font-size:22px;padding:6px 10px;border-radius:12px;cursor:pointer">←</button>
+    <span style="font-size:20px;font-weight:900;color:white;flex:1">🛒 種子商店</span>
+    <div class="top-stat" style="background:rgba(255,255,255,0.25)">
+      <span class="icon">🪙</span>
+      <div><div class="val" id="shop-gold">0</div><div class="lbl" style="color:rgba(255,255,255,0.8)">農金幣</div></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div style="padding:12px 12px 4px;font-size:13px;color:var(--text-mid)">
+      種子需要運動才能生長。每種作物對應不同的運動處方強度。
+    </div>
+    <div class="shop-grid" id="shop-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ ACHIEVEMENTS SCREEN ══════════════ -->
+<div id="screen-achievements" class="screen hidden">
+  <div style="background:linear-gradient(90deg,#7B1FA2,#AB47BC);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+    <button onclick="showScreen('farm')" style="background:rgba(255,255,255,0.25);border:none;color:white;font-size:22px;padding:6px 10px;border-radius:12px;cursor:pointer">←</button>
+    <span style="font-size:20px;font-weight:900;color:white">🏆 成就系統</span>
+  </div>
+  <div class="scroll-content">
+    <div class="achieve-list" id="achieve-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════ PROGRESS SCREEN ══════════════ -->
+<div id="screen-progress" class="screen hidden">
+  <div style="background:linear-gradient(90deg,#1565C0,#42A5F5);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+    <button onclick="showScreen('farm')" style="background:rgba(255,255,255,0.25);border:none;color:white;font-size:22px;padding:6px 10px;border-radius:12px;cursor:pointer">←</button>
+    <span style="font-size:20px;font-weight:900;color:white">📊 運動進度</span>
+  </div>
+  <div class="scroll-content">
+    <div class="progress-cards" id="progress-cards"></div>
+  </div>
+</div>
+
+<!-- ══════════════ EXERCISE MODAL ══════════════ -->
+<div id="modal-exercise" class="modal-overlay hidden" onclick="handleOverlayClick(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-emoji" id="modal-emoji">🌱</span>
+      <div class="modal-title" id="modal-title">播種任務</div>
+      <div class="modal-sub" id="modal-sub">深蹲播種，建立下肢肌力基礎</div>
+    </div>
+
+    <div class="exercise-info">
+      <div class="exercise-name" id="ex-name">深蹲</div>
+      <div class="exercise-detail" id="ex-detail">雙腳與肩同寬，緩慢下蹲後起立，膝蓋不超過腳尖</div>
+      <div class="exercise-evidence" id="ex-evidence">📚 根據 Tan et al. (2026)：2–3 組 × 10–12 次，每週 2–3 次</div>
+    </div>
+
+    <!-- Mode Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-sensor" onclick="setMode('sensor')">📱 感測器模式</button>
+      <button class="mode-tab" id="tab-manual" onclick="setMode('manual')">👆 手動模式</button>
+    </div>
+
+    <!-- Rep Counter (共用) -->
+    <div class="rep-display">
+      <span class="rep-counter" id="rep-counter">0</span>
+      <div class="rep-target" id="rep-target">目標：10 下</div>
+      <div class="rep-bar-wrap">
+        <div class="rep-bar-fill" id="rep-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Feedback message -->
+    <div class="rep-feedback ready" id="rep-feedback">準備好了嗎？點下方按鈕開始！</div>
+
+    <!-- Sensor Panel -->
+    <div class="sensor-panel" id="sensor-panel">
+      <div class="sensor-header">
+        <div class="sensor-dot" id="sensor-dot"></div>
+        <div class="sensor-status" id="sensor-status">尚未啟動感測器</div>
+        <span class="sensor-mode-tag" id="sensor-mode-tag">加速度計</span>
+      </div>
+      <canvas id="sensor-canvas"></canvas>
+      <div class="sensor-readings">
+        <div class="sensor-axis"><div class="axis-val" id="ax-x" style="color:#FF6B6B">0.0</div><div class="axis-lbl">X 軸 (左右)</div></div>
+        <div class="sensor-axis"><div class="axis-val" id="ax-y" style="color:#4ECDC4">0.0</div><div class="axis-lbl">Y 軸 (前後)</div></div>
+        <div class="sensor-axis"><div class="axis-val" id="ax-z" style="color:#FFE66D">0.0</div><div class="axis-lbl">Z 軸 (上下)</div></div>
+        <div class="sensor-axis"><div class="axis-val" id="ax-tot" style="color:#A8E6CF">0.0</div><div class="axis-lbl">合力</div></div>
+      </div>
+    </div>
+
+    <!-- Sensor Start Button -->
+    <button class="btn-sensor" id="btn-sensor-start" onclick="startSensor()">
+      📱 授權並啟動感測器
+    </button>
+
+    <!-- Manual Fallback Button (hidden by default) -->
+    <button class="btn-rep hidden" id="btn-rep" onclick="doRep()">
+      👆 點我算一下 💪
+    </button>
+
+    <button class="btn-cancel" onclick="closeModal()">稍後再做</button>
+  </div>
+</div>
+
+<!-- ══════════════ PLANT SELECT MODAL ══════════════ -->
+<div id="modal-plant" class="modal-overlay hidden" onclick="handlePlantOverlayClick(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-emoji">🌱</span>
+      <div class="modal-title">選擇作物</div>
+      <div class="modal-sub">選一種種子開始種植</div>
+    </div>
+    <div id="plant-options" style="display:flex;flex-direction:column;gap:10px"></div>
+    <button class="btn-cancel" style="margin-top:12px" onclick="closePlantModal()">取消</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- PWA Install Banner -->
+<div id="install-banner">
+  <div class="banner-icon">📲</div>
+  <div class="banner-text">
+    <div class="banner-title">安裝養肌農場到主畫面</div>
+    <div class="banner-sub">像 App 一樣使用，離線也能玩！</div>
+  </div>
+  <button class="btn-install" id="btn-install-confirm">安裝</button>
+  <button class="btn-banner-close" onclick="dismissInstall()">✕</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  GAME DATA
+// ══════════════════════════════════════════════
+
+const CROPS = {
+  spinach:  { name:'菠菜', emoji:'🥬', tier:1, growDays:3, sellPrice:15, seedCost:5,  color:'#5CB85C', phase:'W1-4',
+    desc:'快速收成，建立成就感', evidence:'短作物促進早期正向回饋（COM-B 模型動機建立）' },
+  lettuce:  { name:'生菜', emoji:'🥗', tier:1, growDays:3, sellPrice:18, seedCost:6,  color:'#66BB6A', phase:'W1-4',
+    desc:'口感清脆，種植快速', evidence:'早期 7-14 天快速正向回饋循環' },
+  bokchoy:  { name:'小白菜', emoji:'🌿', tier:1, growDays:4, sellPrice:20, seedCost:7,  color:'#81C784', phase:'W1-4',
+    desc:'富含鈣質，助益骨骼', evidence:'第一階段：建立慣習，降低初始門檻' },
+  tomato:   { name:'番茄', emoji:'🍅', tier:2, growDays:5, sellPrice:35, seedCost:12, color:'#EF5350', phase:'W5-8',
+    desc:'中期作物，穩定投入', evidence:'持續投入需利用遊戲系統的持續性鼓勵' },
+  cucumber: { name:'小黃瓜', emoji:'🥒', tier:2, growDays:5, sellPrice:32, seedCost:10, color:'#66BB6A', phase:'W5-8',
+    desc:'水分充足，成長穩定', evidence:'Tan et al. (2026)：2-3組×10-12次達最佳肌力效益' },
+  corn:     { name:'玉米', emoji:'🌽', tier:2, growDays:6, sellPrice:40, seedCost:14, color:'#FFA726', phase:'W5-8',
+    desc:'金黃豐收，滿足感強', evidence:'Volume Progression：每週漸進增加運動量' },
+  pumpkin:  { name:'南瓜', emoji:'🎃', tier:3, growDays:7, sellPrice:60, seedCost:20, color:'#FF8A65', phase:'W9-12',
+    desc:'高價值作物，長期投入', evidence:'第三階段：高功能性整合，增加 ADL 挑戰' },
+  mango:    { name:'芒果', emoji:'🥭', tier:3, growDays:8, sellPrice:75, seedCost:22, color:'#FFAB40', phase:'W9-12',
+    desc:'熱帶水果，豐盛收穫', evidence:'功能性整合：擴大動作範圍，強化耐力' },
+  pineapple:{ name:'鳳梨', emoji:'🍍', tier:3, growDays:8, sellPrice:80, seedCost:25, color:'#FFC107', phase:'W9-12',
+    desc:'王者作物，最高價值', evidence:'最終階段：長期依從性驅動，策略性收成' },
+};
+
+const EXERCISES = {
+  squat: {
+    name:'深蹲', emoji:'🏋️', color:'#3D8B37',
+    action:'播種', actionEmoji:'🌱',
+    desc:'雙腳與肩同寬，緩慢下蹲後起立\n膝蓋對齊腳尖，背部保持直立',
+    repsBase:8, repsMax:12, sets:3,
+    evidence:'根據 Tan et al. (2026)：阻力訓練 2–3 組 × 10–12 次，強度 60–85% 1RM，每週 2–3 次效益最佳',
+    muscle:'下肢肌力（股四頭肌、臀肌）',
+    benefit:'深蹲播種 → 下肢基礎建立 → 功能性行動能力提升'
+  },
+  sitstand: {
+    name:'坐站', emoji:'🪑', color:'#1976D2',
+    action:'澆水', actionEmoji:'💧',
+    desc:'從椅子緩慢站起，再緩慢坐下\n動作控制，避免借力或墜落',
+    repsBase:8, repsMax:12, sets:3,
+    evidence:'根據 Bae et al. (2025)：坐站訓練改善下肢功能，建議每組 8–12 次，採 30CST 評估進步',
+    muscle:'功能性下肢肌力（轉位能力）',
+    benefit:'坐站澆水 → 日常移位功能 → ADL 能力提升'
+  },
+  sidestep: {
+    name:'側步走', emoji:'🚶', color:'#E65100',
+    action:'除草', actionEmoji:'🌾',
+    desc:'橫向側步移動，保持重心穩定\n左右各為一次，注意骨盆水平',
+    repsBase:10, repsMax:15, sets:3,
+    evidence:'根據 Shen et al. (2023)：複合訓練（阻力+平衡）效益優於單一訓練，側步改善動態平衡',
+    muscle:'臀中肌、動態平衡能力',
+    benefit:'側步除草 → 動態平衡控制 → 跌倒風險降低'
+  },
+  singleleg: {
+    name:'單腳站', emoji:'🦩', color:'#7B1FA2',
+    action:'施肥', actionEmoji:'✨',
+    desc:'單腳站立 10 秒，換腳重複\n手可輕扶支撐物確保安全',
+    repsBase:5, repsMax:10, sets:2,
+    evidence:'根據 Bae et al. (2025)：靜態平衡訓練建議單腳站 10 秒，目標 SPPB 平衡分項達滿分',
+    muscle:'靜態平衡、踝關節穩定',
+    benefit:'單腳站施肥 → 靜態平衡建立 → 跌倒預防'
+  },
+  grip: {
+    name:'握力訓練', emoji:'✊', color:'#B71C1C',
+    action:'採收', actionEmoji:'🧺',
+    desc:'緊握後放鬆，感受肌肉用力\n可使用軟球或毛巾輔助',
+    repsBase:5, repsMax:8, sets:3,
+    evidence:'根據 Li et al. (2025)：握力訓練建議 3 組 × 5–8 次，最佳負荷約個人 49% 1RM，顯著改善握力',
+    muscle:'前臂肌群、握力（上肢功能指標）',
+    benefit:'握力採收 → 上肢功能性力量 → Handgrip 指標改善'
+  },
+};
+
+const ACHIEVEMENTS = [
+  { id:'first_plant', icon:'🌱', title:'初次耕耘', desc:'完成第一次播種任務', target:1, key:'totalPlant',
+    reward:'解鎖番茄種子、+50 農金幣', coins:50 },
+  { id:'week2', icon:'⏰', title:'穩定耕作者', desc:'連續完成 2 週運動任務', target:14, key:'daysActive',
+    reward:'+100 農金幣、肌力升級', coins:100 },
+  { id:'harvest10', icon:'🧺', title:'豐收達人', desc:'累積採收 10 次', target:10, key:'totalHarvest',
+    reward:'+100 農金幣、解鎖鳳梨', coins:100 },
+  { id:'squat50', icon:'🏋️', title:'深蹲英雄', desc:'累積深蹲 50 下', target:50, key:'squat',
+    reward:'+80 農金幣', coins:80 },
+  { id:'balance30', icon:'🦩', title:'平衡大師', desc:'累積單腳站 30 下', target:30, key:'singleleg',
+    reward:'+80 農金幣', coins:80 },
+  { id:'week12', icon:'👑', title:'滿效農夫', desc:'完成完整 12 週計畫', target:84, key:'daysActive',
+    reward:'+500 農金幣、名譽農民稱號', coins:500 },
+];
+
+// ══════════════════════════════════════════════
+//  GAME STATE
+// ══════════════════════════════════════════════
+
+let G = {
+  gold: 30,
+  week: 1,
+  day: 1,
+  totalDays: 1,
+  muscleLevel: 1,
+  plots: [],          // 12 plots
+  inventory: { spinach:3, lettuce:0, bokchoy:0, tomato:0, cucumber:0, corn:0, pumpkin:0, mango:0, pineapple:0 },
+  dailyExercises: {}, // today's done exercises
+  stats: {
+    totalPlant:0, totalHarvest:0, daysActive:0,
+    squat:0, sitstand:0, sidestep:0, singleleg:0, grip:0,
+    totalReps:0, totalMinutes:0,
+  },
+  achievements: {},
+  currentModalPlot: null,
+  currentExercise: null,
+  repsToGo: 0,
+  repsDone: 0,
+};
+
+function initPlots() {
+  G.plots = [];
+  for (let i = 0; i < 12; i++) {
+    G.plots.push({ state:'empty', crop:null, daysPlanted:0, growDays:0, locked: i >= 8 });
+  }
+}
+
+function getPhase() {
+  if (G.week <= 4) return 1;
+  if (G.week <= 8) return 2;
+  return 3;
+}
+
+function getWeeklyExercises() {
+  const phase = getPhase();
+  if (phase === 1) return [
+    { id:'squat',     reps:8,  sets:2, label:'深蹲播種' },
+    { id:'sitstand',  reps:8,  sets:2, label:'坐站澆水' },
+    { id:'sidestep',  reps:10, sets:2, label:'側步除草' },
+  ];
+  if (phase === 2) return [
+    { id:'squat',     reps:10, sets:3, label:'深蹲播種' },
+    { id:'sitstand',  reps:10, sets:3, label:'坐站澆水' },
+    { id:'sidestep',  reps:12, sets:3, label:'側步除草' },
+    { id:'singleleg', reps:6,  sets:2, label:'單腳站施肥' },
+  ];
+  return [
+    { id:'squat',     reps:12, sets:3, label:'進階深蹲播種' },
+    { id:'sitstand',  reps:12, sets:3, label:'坐站澆水' },
+    { id:'sidestep',  reps:15, sets:3, label:'側步除草' },
+    { id:'singleleg', reps:10, sets:2, label:'單腳站施肥' },
+    { id:'grip',      reps:8,  sets:3, label:'握力採收' },
+  ];
+}
+
+// ══════════════════════════════════════════════
+//  RENDERING
+// ══════════════════════════════════════════════
+
+function renderTopBar() {
+  const g = document.getElementById('gold-display');
+  const d = document.getElementById('day-display');
+  const w = document.getElementById('week-display');
+  const m = document.getElementById('muscle-display');
+  const sg = document.getElementById('shop-gold');
+  if (g) g.textContent = G.gold;
+  if (d) d.textContent = `第${G.day}天`;
+  if (w) w.textContent = G.week;
+  if (m) m.textContent = `Lv.${G.muscleLevel}`;
+  if (sg) sg.textContent = G.gold;
+}
+
+function renderWeekBar() {
+  const phases = document.getElementById('week-phases');
+  const label = document.getElementById('phase-label');
+  if (!phases) return;
+  phases.innerHTML = '';
+  const colors = ['#A5D6A7','#A5D6A7','#A5D6A7','#A5D6A7','#FFE082','#FFE082','#FFE082','#FFE082','#EF9A9A','#EF9A9A','#EF9A9A','#EF9A9A'];
+  for (let i = 0; i < 12; i++) {
+    const b = document.createElement('div');
+    b.className = 'phase-block' + (i < G.week ? ' active' : '');
+    b.style.background = colors[i];
+    phases.appendChild(b);
+  }
+  const phaseNames = ['','第一階段：適應期（第1–4週）', '', '', '', '第二階段：展期（第5–8週）', '', '', '', '第三階段：整合期（第9–12週）'];
+  if (phaseNames[G.week - 1]) label.textContent = phaseNames[G.week - 1];
+}
+
+function renderFarmGrid() {
+  const grid = document.getElementById('farm-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  G.plots.forEach((plot, i) => {
+    const div = document.createElement('div');
+    div.className = 'plot ' + (plot.locked ? 'locked' : plot.state);
+    if (!plot.locked) div.onclick = () => clickPlot(i);
+
+    if (plot.locked) {
+      div.innerHTML = `<span style="font-size:28px">🔒</span><div class="plot-name">未解鎖</div>`;
+    } else if (plot.state === 'empty') {
+      div.innerHTML = `
+        <span class="plot-emoji">🌰</span>
+        <div class="plot-name">空地</div>
+        <div class="plot-action">播種</div>
+      `;
+    } else {
+      const c = CROPS[plot.crop];
+      const progress = Math.min(plot.daysPlanted / plot.growDays, 1);
+      const growStages = ['🌱','🌿',c.emoji];
+      const stageIdx = progress < 0.4 ? 0 : progress < 0.85 ? 1 : 2;
+      div.innerHTML = `
+        <span class="plot-emoji">${growStages[stageIdx]}</span>
+        <div class="plot-name">${c.name}</div>
+        ${plot.state === 'ready'
+          ? `<div class="plot-ready-badge">✨</div>`
+          : `<div class="plot-days">${plot.growDays - plot.daysPlanted}天</div>`}
+        <div class="plot-progress">
+          <div class="plot-progress-fill" style="width:${progress*100}%"></div>
+        </div>
+      `;
+      if (plot.state === 'growing') {
+        const needsWater = Math.random() > 0.5;
+        div.innerHTML += `<div class="plot-action">${needsWater ? '澆水' : '除草'}</div>`;
+      }
+      if (plot.state === 'ready') {
+        div.innerHTML += `<div class="plot-action" style="background:var(--gold);color:#333">採收!</div>`;
+      }
+    }
+    grid.appendChild(div);
+  });
+}
+
+function renderTaskList() {
+  const list = document.getElementById('task-list');
+  if (!list) return;
+  const tasks = getWeeklyExercises();
+  list.innerHTML = '';
+  tasks.forEach(t => {
+    const ex = EXERCISES[t.id];
+    const done = !!G.dailyExercises[t.id];
+    const div = document.createElement('div');
+    div.className = 'task-item' + (done ? ' done' : '');
+    div.innerHTML = `
+      <div class="task-dot" style="background:${ex.color}"></div>
+      <div class="task-text">${ex.emoji} ${t.label}</div>
+      <div class="task-reps">${t.sets}組×${t.reps}下</div>
+      <div class="task-check">${done ? '✅' : '⬜'}</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function renderShop() {
+  const grid = document.getElementById('shop-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.entries(CROPS).forEach(([id, c]) => {
+    const phase = getPhase();
+    const locked = (c.tier === 2 && phase < 2) || (c.tier === 3 && phase < 3);
+    const have = G.inventory[id] || 0;
+    const canBuy = !locked && G.gold >= c.seedCost;
+    const div = document.createElement('div');
+    div.className = `shop-card tier${c.tier}` + (locked ? ' shop-locked' : '');
+    div.innerHTML = `
+      <div class="shop-tier-badge">第${c.tier}階段</div>
+      <span class="shop-emoji">${c.emoji}</span>
+      <div class="shop-name">${c.name}</div>
+      <div class="shop-info">🌱→收成：${c.growDays}天</div>
+      <div class="shop-info">庫存：${have} 顆</div>
+      <div class="shop-price">🪙 ${c.seedCost} <small>→售 ${c.sellPrice}</small></div>
+    `;
+    if (!locked) {
+      div.onclick = () => buySeed(id);
+      div.style.cursor = canBuy ? 'pointer' : 'not-allowed';
+    }
+    grid.appendChild(div);
+  });
+}
+
+function renderAchievements() {
+  const list = document.getElementById('achieve-list');
+  if (!list) return;
+  list.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const val = G.stats[a.key] || 0;
+    const progress = Math.min(val / a.target, 1);
+    const unlocked = progress >= 1;
+    const div = document.createElement('div');
+    div.className = 'achieve-card' + (unlocked ? ' unlocked' : '');
+    div.innerHTML = `
+      <div class="achieve-icon">${a.icon}</div>
+      <div class="achieve-info">
+        <div class="achieve-title">${a.title}</div>
+        <div class="achieve-desc">${a.desc}</div>
+        <div class="achieve-reward">🎁 ${a.reward}</div>
+        <div class="achieve-progress-wrap">
+          <div class="achieve-prog-bar">
+            <div class="achieve-prog-fill" style="width:${progress*100}%"></div>
+          </div>
+          <div class="achieve-prog-text">${val} / ${a.target}</div>
+        </div>
+      </div>
+      <div class="achieve-status">${unlocked ? '🏆' : '🔒'}</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function renderProgress() {
+  const cards = document.getElementById('progress-cards');
+  if (!cards) return;
+  const s = G.stats;
+  const phase = getPhase();
+  const phaseStr = phase === 1 ? '適應期（第1–4週）' : phase === 2 ? '展期（第5–8週）' : '整合期（第9–12週）';
+  cards.innerHTML = `
+    <div class="prog-card">
+      <div class="prog-card-title">📅 計畫進度</div>
+      <div class="stat-row"><span class="stat-label">目前階段</span><span class="stat-value">${phaseStr}</span></div>
+      <div class="stat-row"><span class="stat-label">目前週數</span><span class="stat-value">第 ${G.week} / 12 週</span></div>
+      <div class="stat-row"><span class="stat-label">活躍天數</span><span class="stat-value">${s.daysActive} / 84 天</span></div>
+      <div class="stat-row"><span class="stat-label">總採收次數</span><span class="stat-value">${s.totalHarvest} 次</span></div>
+      <div class="stat-row"><span class="stat-label">預估運動量</span><span class="stat-value">${s.totalMinutes} 分鐘</span></div>
+    </div>
+    <div class="prog-card">
+      <div class="prog-card-title">💪 運動累積次數</div>
+      <div class="exercise-hist">
+        ${[
+          ['squat','深蹲','#3D8B37'],
+          ['sitstand','坐站','#1976D2'],
+          ['sidestep','側步走','#E65100'],
+          ['singleleg','單腳站','#7B1FA2'],
+          ['grip','握力','#B71C1C'],
+        ].map(([id, name, color]) => {
+          const count = s[id] || 0;
+          const max = Math.max(100, count);
+          return `<div class="ex-hist-row">
+            <span class="ex-hist-label">${EXERCISES[id].emoji} ${name}</span>
+            <div class="ex-hist-bar-wrap"><div class="ex-hist-bar" style="width:${(count/max)*100}%;background:${color}"></div></div>
+            <span class="ex-hist-count">${count}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="prog-card">
+      <div class="prog-card-title">🔬 實證處方對照</div>
+      <div class="stat-row"><span class="stat-label">訓練頻率</span><span class="stat-value">每週 2–3 次</span></div>
+      <div class="stat-row"><span class="stat-label">訓練強度</span><span class="stat-value">60–85% 1RM</span></div>
+      <div class="stat-row"><span class="stat-label">每次時間</span><span class="stat-value">${phase===1?'30':phase===2?'35':'40'} 分鐘</span></div>
+      <div class="stat-row"><span class="stat-label">組數×次數</span><span class="stat-value">${phase===1?'2組×8-10':'phase'===2?'3組×10-12':'3組×10-12'} 次</span></div>
+      <div style="font-size:12px;color:var(--text-mid);margin-top:8px;line-height:1.6">
+        📚 參考文獻：Tan et al. (2026)・Bae et al. (2025)・Li et al. (2025)・Shen et al. (2023)
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════
+//  GAME LOGIC
+// ══════════════════════════════════════════════
+
+function clickPlot(i) {
+  const plot = G.plots[i];
+  G.currentModalPlot = i;
+
+  if (plot.state === 'empty') {
+    // Check inventory
+    const available = Object.entries(G.inventory)
+      .filter(([id, qty]) => qty > 0 && (CROPS[id].tier <= getPhase() || (CROPS[id].tier === 2 && getPhase() >= 2) || (CROPS[id].tier === 3 && getPhase() >= 3)));
+    if (available.length === 0) {
+      showToast('庫存不足！請到商店購買種子 🛒');
+      return;
+    }
+    showPlantModal(available);
+    return;
+  }
+
+  if (plot.state === 'growing') {
+    const ex = pickGrowingExercise();
+    openExerciseModal(ex, 'water');
+    return;
+  }
+
+  if (plot.state === 'ready') {
+    openExerciseModal(EXERCISES.grip, 'harvest');
+    return;
+  }
+}
+
+function pickGrowingExercise() {
+  const tasks = getWeeklyExercises();
+  // prefer undone tasks
+  const undone = tasks.filter(t => !G.dailyExercises[t.id]);
+  const pick = undone.length > 0 ? undone[Math.floor(Math.random() * undone.length)] : tasks[Math.floor(Math.random() * tasks.length)];
+  return EXERCISES[pick.id];
+}
+
+function showPlantModal(available) {
+  const opts = document.getElementById('plant-options');
+  opts.innerHTML = '';
+  available.forEach(([id, qty]) => {
+    const c = CROPS[id];
+    const ex = EXERCISES.squat;
+    const btn = document.createElement('button');
+    btn.style.cssText = `display:flex;align-items:center;gap:14px;width:100%;background:var(--warm-bg);border:2px solid #E0E0E0;border-radius:16px;padding:14px;cursor:pointer;text-align:left`;
+    btn.innerHTML = `
+      <span style="font-size:36px">${c.emoji}</span>
+      <div style="flex:1">
+        <div style="font-size:18px;font-weight:800">${c.name}</div>
+        <div style="font-size:13px;color:var(--text-mid)">收成：${c.growDays}天・售出：${c.sellPrice}🪙・庫存：${qty}顆</div>
+        <div style="font-size:12px;color:var(--green-dark);margin-top:2px">🏋️ 先完成深蹲×${getWeeklyExercises()[0]?.reps||8}下才能播種</div>
+      </div>
+    `;
+    btn.onclick = () => {
+      closePlantModal();
+      G.selectedSeed = id;
+      openExerciseModal(EXERCISES.squat, 'plant');
+    };
+    opts.appendChild(btn);
+  });
+  document.getElementById('modal-plant').classList.remove('hidden');
+}
+
+function closePlantModal() {
+  document.getElementById('modal-plant').classList.add('hidden');
+}
+
+function handlePlantOverlayClick(e) {
+  if (e.target.id === 'modal-plant') closePlantModal();
+}
+
+function openExerciseModal(ex, actionType) {
+  G.currentExercise = { ex, actionType };
+  const tasks = getWeeklyExercises();
+  const taskInfo = tasks.find(t => t.id === Object.keys(EXERCISES).find(k => EXERCISES[k] === ex));
+  const reps = taskInfo ? taskInfo.reps : ex.repsBase;
+  G.repsToGo = reps;
+  G.repsDone = 0;
+
+  document.getElementById('modal-emoji').textContent = ex.emoji;
+  document.getElementById('modal-title').textContent = `${ex.action}任務`;
+  document.getElementById('modal-sub').textContent = `${ex.name} → ${ex.action}`;
+  document.getElementById('ex-name').textContent = ex.name;
+  document.getElementById('ex-detail').textContent = ex.desc;
+  document.getElementById('ex-evidence').textContent = `📚 ${ex.evidence}`;
+  document.getElementById('rep-counter').textContent = '0';
+  document.getElementById('rep-target').textContent = `目標：${reps} 下`;
+  document.getElementById('rep-bar').style.width = '0%';
+  document.getElementById('btn-rep').textContent = `點我做一下！ ${ex.emoji}`;
+  document.getElementById('btn-rep').disabled = false;
+
+  document.getElementById('modal-exercise').classList.remove('hidden');
+}
+
+function doRep() {
+  G.repsDone++;
+  document.getElementById('rep-counter').textContent = G.repsDone;
+  const pct = (G.repsDone / G.repsToGo) * 100;
+  document.getElementById('rep-bar').style.width = pct + '%';
+
+  // Update stats
+  const exId = Object.keys(EXERCISES).find(k => EXERCISES[k] === G.currentExercise.ex);
+  if (exId) G.stats[exId] = (G.stats[exId] || 0) + 1;
+  G.stats.totalReps++;
+
+  // Haptic / animation
+  const btn = document.getElementById('btn-rep');
+  btn.style.transform = 'scale(0.96)';
+  setTimeout(() => { btn.style.transform = ''; }, 100);
+
+  if (G.repsDone >= G.repsToGo) {
+    completeExercise();
+  }
+}
+
+function completeExercise() {
+  const btn = document.getElementById('btn-rep');
+  btn.textContent = '✅ 完成！';
+  btn.disabled = true;
+  btn.style.background = 'linear-gradient(135deg, #FFB800, #FF8C42)';
+
+  const exId = Object.keys(EXERCISES).find(k => EXERCISES[k] === G.currentExercise.ex);
+  if (exId) {
+    G.dailyExercises[exId] = true;
+    G.stats.totalMinutes += 5;
+  }
+
+  setTimeout(() => {
+    closeModal();
+    applyFarmAction();
+    checkAchievements();
+    renderAll();
+  }, 700);
+}
+
+function applyFarmAction() {
+  const i = G.currentModalPlot;
+  const plot = G.plots[i];
+  const action = G.currentExercise.actionType;
+
+  if (action === 'plant') {
+    const seed = G.selectedSeed;
+    if (!seed || !G.inventory[seed] || G.inventory[seed] <= 0) {
+      showToast('種子不足！');
+      return;
+    }
+    G.inventory[seed]--;
+    plot.state = 'planted';
+    plot.crop = seed;
+    plot.daysPlanted = 0;
+    plot.growDays = CROPS[seed].growDays;
+    G.stats.totalPlant++;
+    showToast(`🌱 播種成功！${CROPS[seed].name}需要 ${CROPS[seed].growDays} 天收成`);
+    // Simulate growth (each interaction = 1 day)
+    advancePlotGrowth(i, 1);
+  } else if (action === 'water') {
+    advancePlotGrowth(i, 1);
+    showToast('💧 澆水/除草完成！作物又長大了一些 🌿');
+  } else if (action === 'harvest') {
+    if (plot.state === 'ready') {
+      const c = CROPS[plot.crop];
+      G.gold += c.sellPrice;
+      G.stats.totalHarvest++;
+      showCoinPop(c.sellPrice);
+      showToast(`🧺 採收 ${c.name}！獲得 ${c.sellPrice} 🪙`);
+      plot.state = 'empty'; plot.crop = null; plot.daysPlanted = 0;
+      // Chance to unlock next plot
+      if (G.stats.totalHarvest % 3 === 0) unlockNextPlot();
+      G.stats.daysActive = Math.max(G.stats.daysActive, G.totalDays);
+    }
+  }
+}
+
+function advancePlotGrowth(i, days) {
+  const plot = G.plots[i];
+  plot.daysPlanted += days;
+  if (plot.state === 'planted') plot.state = 'growing';
+  if (plot.daysPlanted >= plot.growDays) {
+    plot.state = 'ready';
+    plot.daysPlanted = plot.growDays;
+  }
+}
+
+function unlockNextPlot() {
+  const locked = G.plots.findIndex(p => p.locked);
+  if (locked !== -1) {
+    G.plots[locked].locked = false;
+    showToast('🎉 解鎖新農地！繼續加油！');
+  }
+}
+
+function buySeed(id) {
+  const c = CROPS[id];
+  if (G.gold < c.seedCost) {
+    showToast(`農金幣不足！需要 ${c.seedCost} 🪙`);
+    return;
+  }
+  G.gold -= c.seedCost;
+  G.inventory[id] = (G.inventory[id] || 0) + 1;
+  renderTopBar();
+  renderShop();
+  showToast(`✅ 購買 ${c.emoji} ${c.name} 種子！`);
+}
+
+function closeModal() {
+  document.getElementById('modal-exercise').classList.add('hidden');
+  G.currentExercise = null;
+}
+
+function handleOverlayClick(e) {
+  if (e.target.id === 'modal-exercise') closeModal();
+}
+
+// ══════════════════════════════════════════════
+//  ACHIEVEMENTS
+// ══════════════════════════════════════════════
+
+function checkAchievements() {
+  ACHIEVEMENTS.forEach(a => {
+    if (G.achievements[a.id]) return;
+    const val = G.stats[a.key] || 0;
+    if (val >= a.target) {
+      G.achievements[a.id] = true;
+      G.gold += a.coins;
+      G.muscleLevel = Math.min(G.muscleLevel + 1, 10);
+      showToast(`🏆 成就解鎖：${a.title}！+${a.coins}🪙`);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+//  SCREEN NAVIGATION
+// ══════════════════════════════════════════════
+
+function showScreen(name) {
+  ['farm','shop','achievements','progress'].forEach(s => {
+    document.getElementById(`screen-${s}`).classList.add('hidden');
+    const nb = document.getElementById(`nav-${s}`);
+    if (nb) nb.classList.remove('active');
+  });
+  document.getElementById(`screen-${name}`).classList.remove('hidden');
+  const nb = document.getElementById(`nav-${name}`);
+  if (nb) nb.classList.add('active');
+
+  if (name === 'shop') renderShop();
+  if (name === 'achievements') renderAchievements();
+  if (name === 'progress') renderProgress();
+  if (name === 'farm') { renderTopBar(); renderWeekBar(); renderFarmGrid(); renderTaskList(); }
+}
+
+function renderAll() {
+  renderTopBar();
+  renderWeekBar();
+  renderFarmGrid();
+  renderTaskList();
+}
+
+// ══════════════════════════════════════════════
+//  TOAST & FX
+// ══════════════════════════════════════════════
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function showCoinPop(amount) {
+  const el = document.createElement('div');
+  el.className = 'coin-pop';
+  el.textContent = `+${amount} 🪙`;
+  el.style.left = (Math.random() * 60 + 20) + '%';
+  el.style.top = '40%';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+// ══════════════════════════════════════════════
+//  SENSOR MODULE
+// ══════════════════════════════════════════════
+
+const SENSOR = {
+  active: false,
+  mode: 'sensor',          // 'sensor' | 'manual'
+  history: [],             // recent acceleration magnitude samples
+  canvasCtx: null,
+  waveBuffer: [],          // for waveform drawing
+  animFrame: null,
+  lastRepTime: 0,
+  phase: 'idle',           // 'idle' | 'down' | 'up' (for squat/sitstand)
+  stableCount: 0,          // for single-leg-stand stability
+  peakDetectCooldown: 0,
+  rawX: 0, rawY: 0, rawZ: 0,
+  SAMPLE_RATE: 60,
+  REP_COOLDOWN_MS: 800,    // min ms between counted reps
+};
+
+// Thresholds tuned for each exercise type
+const EX_THRESHOLDS = {
+  squat:     { axis:'z', downThr:-1.5, upThr:1.2,  minDepth:2.0, desc:'往下蹲時 Z 軸下降，起立時上升' },
+  sitstand:  { axis:'z', downThr:-1.2, upThr:1.0,  minDepth:1.8, desc:'站起時 Z 軸正峰值，坐下時負峰值' },
+  sidestep:  { axis:'x', peakThr:1.8,              minDepth:1.8, desc:'側步時 X 軸出現交替峰值' },
+  singleleg: { axis:'total', stabilityThr:0.6, holdSec:3,       desc:'合力保持低波動代表穩定站立' },
+  grip:      { axis:'total', shakeThr:2.2,          minDepth:2.0, desc:'握緊放鬆時合力出現脈衝峰值' },
+};
+
+function setMode(mode) {
+  SENSOR.mode = mode;
+  document.getElementById('tab-sensor').classList.toggle('active', mode === 'sensor');
+  document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
+  document.getElementById('sensor-panel').classList.toggle('hidden', mode === 'manual');
+  document.getElementById('btn-sensor-start').classList.toggle('hidden', mode === 'manual');
+  document.getElementById('btn-rep').classList.toggle('hidden', mode === 'sensor');
+  if (mode === 'manual') stopSensor();
+}
+
+async function startSensor() {
+  const btn = document.getElementById('btn-sensor-start');
+
+  // iOS 13+ requires explicit permission for DeviceMotion
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    try {
+      const perm = await DeviceMotionEvent.requestPermission();
+      if (perm !== 'granted') {
+        sensorError('感測器授權被拒絕，請使用手動模式'); return;
+      }
+    } catch (e) {
+      sensorError('無法取得授權：' + e.message); return;
+    }
+  }
+
+  if (!window.DeviceMotionEvent) {
+    sensorError('此裝置不支援動作感測器，已切換為手動模式');
+    setMode('manual'); return;
+  }
+
+  SENSOR.active = true;
+  SENSOR.history = [];
+  SENSOR.waveBuffer = new Array(120).fill(0);
+  SENSOR.phase = 'idle';
+  SENSOR.stableCount = 0;
+  SENSOR.lastRepTime = 0;
+
+  btn.textContent = '🟢 感測器運作中...';
+  btn.disabled = true;
+  document.getElementById('sensor-dot').classList.add('active');
+  document.getElementById('sensor-status').textContent = '感測器已啟動，開始動作！';
+
+  window.addEventListener('devicemotion', onDeviceMotion, { passive: true });
+  initCanvas();
+  drawWaveform();
+  updateFeedbackForExercise();
+}
+
+function stopSensor() {
+  if (!SENSOR.active) return;
+  SENSOR.active = false;
+  window.removeEventListener('devicemotion', onDeviceMotion);
+  if (SENSOR.animFrame) cancelAnimationFrame(SENSOR.animFrame);
+  document.getElementById('sensor-dot').classList.remove('active');
+  document.getElementById('sensor-status').textContent = '感測器已停止';
+  const btn = document.getElementById('btn-sensor-start');
+  if (btn) { btn.disabled = false; btn.textContent = '📱 授權並啟動感測器'; }
+}
+
+function sensorError(msg) {
+  document.getElementById('sensor-dot').classList.add('error');
+  document.getElementById('sensor-status').textContent = msg;
+  showToast('⚠️ ' + msg);
+}
+
+function onDeviceMotion(e) {
+  const acc = e.accelerationIncludingGravity || e.acceleration;
+  if (!acc) return;
+
+  const x = acc.x || 0;
+  const y = acc.y || 0;
+  const z = acc.z || 0;
+  const total = Math.sqrt(x*x + y*y + z*z);
+
+  SENSOR.rawX = x; SENSOR.rawY = y; SENSOR.rawZ = z;
+
+  // Update display
+  document.getElementById('ax-x').textContent   = x.toFixed(1);
+  document.getElementById('ax-y').textContent   = y.toFixed(1);
+  document.getElementById('ax-z').textContent   = z.toFixed(1);
+  document.getElementById('ax-tot').textContent = total.toFixed(1);
+
+  // Waveform buffer
+  SENSOR.waveBuffer.push(total);
+  if (SENSOR.waveBuffer.length > 120) SENSOR.waveBuffer.shift();
+
+  SENSOR.history.push({ x, y, z, total, t: Date.now() });
+  if (SENSOR.history.length > 60) SENSOR.history.shift();
+
+  detectRep({ x, y, z, total });
+}
+
+function detectRep({ x, y, z, total }) {
+  const exId = getCurrentExId();
+  if (!exId) return;
+  const now = Date.now();
+  if (now - SENSOR.lastRepTime < SENSOR.REP_COOLDOWN_MS) return;
+
+  const cfg = EX_THRESHOLDS[exId];
+  if (!cfg) return;
+
+  if (exId === 'squat' || exId === 'sitstand') {
+    detectPhaseRep(z, cfg);
+
+  } else if (exId === 'sidestep') {
+    // Peak in X axis (absolute)
+    if (Math.abs(x) > cfg.peakThr) {
+      countRep();
+      SENSOR.lastRepTime = now;
+      setFeedback('✅ 偵測到側步！', 'good');
+    }
+
+  } else if (exId === 'singleleg') {
+    // Low variance = stable stance
+    const recent = SENSOR.history.slice(-20).map(s => s.total);
+    if (recent.length < 20) return;
+    const mean = recent.reduce((a, b) => a + b, 0) / recent.length;
+    const variance = recent.reduce((s, v) => s + (v - mean) ** 2, 0) / recent.length;
+    if (variance < cfg.stabilityThr) {
+      SENSOR.stableCount++;
+      const holdFrames = cfg.holdSec * 20; // ~20 samples/sec
+      const pct = Math.min(SENSOR.stableCount / holdFrames, 1);
+      setFeedback(`⚖️ 保持穩定…${Math.round(pct * 100)}%`, 'wait');
+      if (SENSOR.stableCount >= holdFrames) {
+        SENSOR.stableCount = 0;
+        countRep();
+        SENSOR.lastRepTime = now;
+        setFeedback('✅ 單腳站立完成！換腳！', 'good');
+      }
+    } else {
+      SENSOR.stableCount = Math.max(0, SENSOR.stableCount - 2);
+      setFeedback('⚠️ 重心未穩，請保持平衡…', 'wait');
+    }
+
+  } else if (exId === 'grip') {
+    if (total > cfg.shakeThr) {
+      countRep();
+      SENSOR.lastRepTime = now;
+      setFeedback('✅ 偵測到握力！放鬆後再握', 'good');
+    }
+  }
+}
+
+function detectPhaseRep(zVal, cfg) {
+  const now = Date.now();
+  if (SENSOR.phase === 'idle' || SENSOR.phase === 'up') {
+    if (zVal < cfg.downThr) {
+      SENSOR.phase = 'down';
+      setFeedback('⬇️ 往下蹲…保持！', 'wait');
+    }
+  } else if (SENSOR.phase === 'down') {
+    if (zVal > cfg.upThr) {
+      SENSOR.phase = 'up';
+      countRep();
+      SENSOR.lastRepTime = now;
+      setFeedback('✅ 完成一下！繼續！', 'good');
+    }
+  }
+}
+
+function countRep() {
+  // Flash effect
+  const counter = document.getElementById('rep-counter');
+  counter.style.transform = 'scale(1.3)';
+  counter.style.color = '#FF8C42';
+  setTimeout(() => { counter.style.transform = ''; counter.style.color = ''; }, 200);
+
+  // Vibrate if supported
+  if (navigator.vibrate) navigator.vibrate(60);
+
+  doRep(); // calls existing rep-counting logic
+}
+
+function getCurrentExId() {
+  if (!G.currentExercise) return null;
+  return Object.keys(EXERCISES).find(k => EXERCISES[k] === G.currentExercise.ex);
+}
+
+function setFeedback(msg, type) {
+  const el = document.getElementById('rep-feedback');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'rep-feedback ' + (type || 'ready');
+}
+
+function updateFeedbackForExercise() {
+  const exId = getCurrentExId();
+  const hints = {
+    squat:     '📱 手機放褲袋或夾腰帶，正常深蹲即可自動計數',
+    sitstand:  '📱 手機放胸前口袋，站起坐下動作即可計數',
+    sidestep:  '📱 手機放側腰，左右側步即可計數',
+    singleleg: '📱 手機放腰間，保持單腳站3秒算一下',
+    grip:      '📱 手握手機用力握緊再放鬆，即可計數',
+  };
+  setFeedback(hints[exId] || '準備開始！', 'ready');
+}
+
+function initCanvas() {
+  const c = document.getElementById('sensor-canvas');
+  if (!c) return;
+  c.width = c.offsetWidth * (window.devicePixelRatio || 1);
+  c.height = c.offsetHeight * (window.devicePixelRatio || 1);
+  SENSOR.canvasCtx = c.getContext('2d');
+}
+
+function drawWaveform() {
+  if (!SENSOR.active) return;
+  SENSOR.animFrame = requestAnimationFrame(drawWaveform);
+  const ctx = SENSOR.canvasCtx;
+  if (!ctx) return;
+  const c = document.getElementById('sensor-canvas');
+  const W = c.width, H = c.height;
+
+  ctx.fillStyle = '#1A1A2E';
+  ctx.fillRect(0, 0, W, H);
+
+  // threshold line
+  const exId = getCurrentExId();
+  const cfg = EX_THRESHOLDS[exId] || {};
+  const midY = H / 2;
+  const scale = H / 30;
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(W, midY); ctx.stroke();
+
+  // Waveform
+  const buf = SENSOR.waveBuffer;
+  if (buf.length < 2) return;
+  const step = W / (buf.length - 1);
+
+  ctx.strokeStyle = '#4ECDC4';
+  ctx.lineWidth = 2 * (window.devicePixelRatio || 1);
+  ctx.beginPath();
+  buf.forEach((val, i) => {
+    const px = i * step;
+    const py = midY - (val - 9.8) * scale * 1.5; // normalize around gravity
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+
+  // Peak threshold marker
+  if (cfg.peakThr || cfg.shakeThr) {
+    const thr = cfg.peakThr || cfg.shakeThr;
+    const ty = midY - (thr) * scale;
+    ctx.strokeStyle = 'rgba(255,107,107,0.5)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(0, ty); ctx.lineTo(W, ty); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// Patch openExerciseModal to reset sensor state
+const _origOpen = openExerciseModal;
+openExerciseModal = function(ex, actionType) {
+  _origOpen(ex, actionType);
+  // Reset sensor state for new exercise
+  SENSOR.phase = 'idle';
+  SENSOR.stableCount = 0;
+  SENSOR.lastRepTime = 0;
+  SENSOR.history = [];
+  setFeedback('準備好了嗎？選擇模式後開始！', 'ready');
+  if (SENSOR.active) stopSensor();
+  const btn = document.getElementById('btn-sensor-start');
+  if (btn) { btn.disabled = false; btn.textContent = '📱 授權並啟動感測器'; }
+  document.getElementById('sensor-dot').classList.remove('active','error');
+  document.getElementById('sensor-status').textContent = '尚未啟動感測器';
+  // Default to sensor mode
+  setMode('sensor');
+  setTimeout(() => { if (SENSOR.mode === 'sensor') updateFeedbackForExercise(); }, 50);
+};
+
+// Patch closeModal to stop sensor
+const _origClose = closeModal;
+closeModal = function() {
+  stopSensor();
+  _origClose();
+};
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+
+function startGame() {
+  document.getElementById('screen-title').classList.add('hidden');
+  document.getElementById('screen-farm').classList.remove('hidden');
+  initPlots();
+  // Pre-plant first plot for demo
+  G.plots[0] = { state:'growing', crop:'spinach', daysPlanted:1, growDays:3, locked:false };
+  G.plots[1] = { state:'ready',   crop:'lettuce', daysPlanted:3, growDays:3, locked:false };
+  G.plots[2] = { state:'empty', crop:null, daysPlanted:0, growDays:0, locked:false };
+  renderAll();
+  setTimeout(() => showToast('歡迎來到養肌農場！點擊農地開始運動 💪'), 600);
+}
+
+// ══════════════════════════════════════════════
+//  PWA：Service Worker + 安裝提示
+// ══════════════════════════════════════════════
+
+let deferredInstallPrompt = null;
+
+// 攔截瀏覽器的「加入主畫面」事件，存起來等使用者點按鈕
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  // 延遲 3 秒再顯示橫幅，避免一開就跳出干擾
+  setTimeout(() => {
+    document.getElementById('install-banner').classList.add('show');
+  }, 3000);
+});
+
+// 使用者點「安裝」按鈕
+document.getElementById('btn-install-confirm').addEventListener('click', async () => {
+  if (!deferredInstallPrompt) {
+    // iOS Safari 無 beforeinstallprompt，顯示手動步驟說明
+    showIOSInstallGuide();
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  dismissInstall();
+  if (outcome === 'accepted') showToast('✅ 養肌農場已加入主畫面！');
+});
+
+// 已安裝完成事件
+window.addEventListener('appinstalled', () => {
+  dismissInstall();
+  showToast('🎉 安裝成功！可從主畫面開啟養肌農場');
+});
+
+function dismissInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+}
+
+// iOS Safari 不支援 beforeinstallprompt，需手動引導
+function showIOSInstallGuide() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const msg = isIOS
+    ? '📱 iOS 安裝步驟：\n1. 點下方「分享」按鈕 □↑\n2. 選「加入主畫面」\n3. 點「新增」完成安裝'
+    : '📱 請點瀏覽器選單 →「加入主畫面」或「安裝應用程式」';
+  alert(msg);
+}
+
+// 偵測是否已從主畫面啟動（standalone 模式）
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  // 已是 App 模式，不顯示安裝橫幅
+  dismissInstall();
+}
+
+// ── Service Worker 註冊 ──
+// 必須在 HTTPS 或 localhost 環境下才會生效
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('[SW] 已註冊，範圍：', reg.scope))
+      .catch(err => console.warn('[SW] 註冊失敗（需 HTTPS）：', err));
+  });
+}
+
+// ══════════════════════════════════════════════
+//  DOMContentLoaded
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // 若已是 standalone App 模式，隱藏安裝橫幅
+  if (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+    dismissInstall();
+  }
+});
+</script>
+</body>
+</html>
