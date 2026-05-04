@@ -18,29 +18,34 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 :root {
-  --green-dark: #3D8B37;
-  --green-mid: #5CB85C;
-  --green-light: #A8D5A2;
-  --soil: #8B5E3C;
-  --soil-light: #C4915A;
-  --gold: #FFB800;
-  --orange: #FF7043;
-  --sky: #87CEEB;
-  --cream: #FFFBF0;
-  --warm-bg: #FFF3E0;
-  --text-dark: #2C3E50;
-  --text-mid: #5D6D7E;
-  --red: #E53935;
-  --blue: #1976D2;
-  --purple: #7B1FA2;
-  --radius: 18px;
-  --shadow: 0 4px 16px rgba(0,0,0,0.15);
+  /* 柔和農場色系 — 高齡友善 */
+  --green-dark:  #4A7C3F;   /* 鼠尾草深綠 */
+  --green-mid:   #6FA85E;   /* 鼠尾草中綠 */
+  --green-light: #B8D4AF;   /* 嫩葉淺綠 */
+  --soil:        #A07850;   /* 柔和土褐 */
+  --soil-light:  #D4B896;   /* 淺沙色 */
+  --gold:        #E8A840;   /* 蜂蜜金 */
+  --orange:      #D97C40;   /* 暖陶橘（降低飽和度）*/
+  --sky:         #B8D8EE;   /* 淡天藍 */
+  --cream:       #FAF6EF;   /* 亞麻白 */
+  --warm-bg:     #F2EDE4;   /* 溫暖米色背景 */
+  --card-bg:     #FFFFFF;
+  --card-border: #E0D8CC;
+  --text-dark:   #3A3226;   /* 深暖棕，高對比 */
+  --text-mid:    #7A6A5A;   /* 中暖棕 */
+  --text-light:  #A89888;
+  --red:         #C0392B;
+  --blue:        #2471A3;
+  --purple:      #6C3483;
+  --radius:      20px;
+  --shadow:      0 4px 18px rgba(90,60,30,0.12);
 }
 
 html, body {
   width: 100%; height: 100%;
   background: var(--warm-bg);
   font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+  font-size: 17px;
   color: var(--text-dark);
   overflow: hidden;
 }
@@ -50,68 +55,66 @@ html, body {
 
 /* ─── TITLE SCREEN ─── */
 #screen-title {
-  background: linear-gradient(160deg, #B8E6A0 0%, #7CC87A 40%, #4A9E5C 100%);
-  justify-content: center; align-items: center; gap: 24px; padding: 32px;
+  background: linear-gradient(160deg, #C8DFB8 0%, #8DBD7A 45%, #5C8A4A 100%);
+  justify-content: center; align-items: center; gap: 28px; padding: 36px 28px;
 }
 .title-sun {
-  width: 90px; height: 90px; background: #FFD700;
-  border-radius: 50%; position: absolute; top: 40px; right: 40px;
-  box-shadow: 0 0 0 16px rgba(255,215,0,0.25), 0 0 0 32px rgba(255,215,0,0.1);
+  width: 88px; height: 88px; background: #F0C040;
+  border-radius: 50%; position: absolute; top: 36px; right: 36px;
+  box-shadow: 0 0 0 16px rgba(240,192,64,0.2), 0 0 0 32px rgba(240,192,64,0.08);
   animation: pulse 3s ease-in-out infinite;
 }
-@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 .title-cloud {
-  position: absolute; background: white; border-radius: 50px;
-  opacity: 0.85; animation: drift 8s linear infinite;
+  position: absolute; background: rgba(255,255,255,0.9); border-radius: 50px;
+  animation: drift 10s linear infinite;
 }
-@keyframes drift { from{transform:translateX(-120px)} to{transform:translateX(calc(100vw + 120px))} }
-.title-logo { font-size: 52px; }
+@keyframes drift { from{transform:translateX(-140px)} to{transform:translateX(calc(100vw + 140px))} }
+.title-logo { font-size: 64px; }
 .title-h1 {
-  font-size: 38px; font-weight: 900; color: #fff;
-  text-shadow: 0 3px 10px rgba(0,0,0,0.25); text-align: center; line-height: 1.2;
+  font-size: 42px; font-weight: 900; color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2); text-align: center; line-height: 1.2;
 }
 .title-sub {
-  font-size: 18px; color: rgba(255,255,255,0.9); text-align: center;
-  background: rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 30px;
+  font-size: 20px; color: rgba(255,255,255,0.95); text-align: center;
+  background: rgba(0,0,0,0.12); padding: 10px 24px; border-radius: 30px;
 }
 .title-badge {
-  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
 }
 .badge {
-  background: rgba(255,255,255,0.9); border-radius: 30px;
-  padding: 8px 16px; font-size: 14px; font-weight: 700; color: var(--green-dark);
+  background: rgba(255,255,255,0.92); border-radius: 30px;
+  padding: 10px 18px; font-size: 16px; font-weight: 700; color: var(--green-dark);
 }
 .btn-start {
   background: var(--orange); color: white;
-  font-size: 28px; font-weight: 900;
-  padding: 18px 60px; border-radius: 60px; border: none; cursor: pointer;
-  box-shadow: 0 6px 20px rgba(255,112,67,0.45);
+  font-size: 26px; font-weight: 900;
+  min-height: 64px; padding: 0 64px; border-radius: 60px; border: none; cursor: pointer;
+  box-shadow: 0 6px 20px rgba(180,100,40,0.35);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.btn-start:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(255,112,67,0.3); }
-.evidence-note {
-  font-size: 13px; color: rgba(255,255,255,0.75); text-align: center;
-  max-width: 340px;
-}
+.btn-start:active { transform: scale(0.96); }
 
 /* ─── TOP BAR ─── */
 #top-bar {
-  background: linear-gradient(90deg, #3D8B37, #5CB85C);
-  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2); flex-shrink: 0;
+  background: linear-gradient(90deg, #4A7C3F, #6FA85E);
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 2px 10px rgba(40,60,30,0.18); flex-shrink: 0;
+  min-height: 64px;
 }
 .top-stat {
-  display: flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,0.2); border-radius: 20px;
-  padding: 5px 12px;
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.22); border-radius: 22px;
+  padding: 7px 14px;
 }
-.top-stat .icon { font-size: 18px; }
-.top-stat .val { font-size: 17px; font-weight: 700; color: white; }
-.top-stat .lbl { font-size: 12px; color: rgba(255,255,255,0.8); }
+.top-stat .icon { font-size: 22px; }
+.top-stat .val { font-size: 20px; font-weight: 800; color: white; }
+.top-stat .lbl { font-size: 13px; color: rgba(255,255,255,0.85); }
 .spacer { flex: 1; }
 .btn-top {
   background: rgba(255,255,255,0.25); border: none; color: white;
-  font-size: 22px; padding: 6px 10px; border-radius: 12px; cursor: pointer;
+  font-size: 24px; padding: 8px 12px; border-radius: 14px; cursor: pointer;
+  min-width: 48px; min-height: 48px;
 }
 
 /* ─── FARM SCREEN ─── */
@@ -119,23 +122,23 @@ html, body {
 #farm-main { flex: 1; overflow-y: auto; padding: 12px; }
 
 .section-title {
-  font-size: 18px; font-weight: 800; color: var(--green-dark);
-  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  font-size: 20px; font-weight: 800; color: var(--green-dark);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
 }
 
 /* Week progress bar */
 #week-bar {
-  background: white; border-radius: var(--radius); padding: 14px 16px;
-  margin-bottom: 12px; box-shadow: var(--shadow);
+  background: var(--card-bg); border-radius: var(--radius); padding: 16px 18px;
+  margin-bottom: 14px; box-shadow: var(--shadow);
 }
-.week-label { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
-.week-phases { display: flex; gap: 4px; margin-bottom: 6px; }
+.week-label { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 10px; }
+.week-phases { display: flex; gap: 5px; margin-bottom: 8px; }
 .phase-block {
-  flex: 1; height: 10px; border-radius: 10px; opacity: 0.4;
+  flex: 1; height: 12px; border-radius: 10px; opacity: 0.3;
   transition: opacity 0.3s;
 }
 .phase-block.active { opacity: 1; }
-.phase-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-mid); }
+.phase-labels { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-mid); }
 
 /* Farm grid */
 #farm-grid {
@@ -167,17 +170,17 @@ html, body {
 .plot.locked {
   background: linear-gradient(160deg, #aaa, #888); cursor: default; opacity: 0.6;
 }
-.plot-emoji { font-size: 32px; line-height: 1; }
-.plot-name { font-size: 11px; font-weight: 700; color: white; margin-top: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+.plot-emoji { font-size: 36px; line-height: 1; }
+.plot-name { font-size: 13px; font-weight: 700; color: white; margin-top: 4px; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
 .plot-days {
-  position: absolute; bottom: 5px; right: 7px;
-  font-size: 11px; font-weight: 700; color: white;
-  background: rgba(0,0,0,0.35); border-radius: 8px; padding: 1px 5px;
+  position: absolute; bottom: 6px; right: 8px;
+  font-size: 13px; font-weight: 700; color: white;
+  background: rgba(0,0,0,0.38); border-radius: 8px; padding: 2px 7px;
 }
 .plot-action {
-  position: absolute; top: 5px; left: 5px;
-  font-size: 10px; font-weight: 700; color: white;
-  background: var(--orange); border-radius: 8px; padding: 2px 6px;
+  position: absolute; top: 6px; left: 6px;
+  font-size: 12px; font-weight: 700; color: white;
+  background: var(--orange); border-radius: 8px; padding: 3px 8px;
 }
 .plot-ready-badge {
   position: absolute; top: 4px; right: 4px;
@@ -195,34 +198,35 @@ html, body {
 
 /* Tasks panel */
 #tasks-panel {
-  background: white; border-radius: var(--radius); padding: 14px 16px;
-  margin-bottom: 12px; box-shadow: var(--shadow);
+  background: var(--card-bg); border-radius: var(--radius); padding: 16px 18px;
+  margin-bottom: 14px; box-shadow: var(--shadow);
 }
-.task-list { display: flex; flex-direction: column; gap: 8px; }
+.task-list { display: flex; flex-direction: column; gap: 10px; }
 .task-item {
-  display: flex; align-items: center; gap: 12px;
-  background: var(--warm-bg); border-radius: 12px; padding: 10px 14px;
-  border: 2px solid transparent;
+  display: flex; align-items: center; gap: 14px;
+  background: var(--warm-bg); border-radius: 14px; padding: 14px 16px;
+  border: 2px solid transparent; min-height: 56px;
 }
-.task-item.done { border-color: var(--green-mid); background: #F0FFF0; }
-.task-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-.task-text { flex: 1; font-size: 15px; font-weight: 600; }
-.task-reps { font-size: 13px; color: var(--text-mid); }
-.task-check { font-size: 20px; }
+.task-item.done { border-color: var(--green-mid); background: #EDF5EC; }
+.task-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+.task-text { flex: 1; font-size: 18px; font-weight: 700; }
+.task-reps { font-size: 16px; color: var(--text-mid); font-weight: 600; }
+.task-check { font-size: 24px; }
 
 /* Bottom nav */
 #bottom-nav {
-  background: white; display: flex; border-top: 2px solid #F0F0F0;
+  background: var(--card-bg); display: flex; border-top: 2px solid var(--card-border);
   padding-bottom: env(safe-area-inset-bottom, 0);
-  flex-shrink: 0;
+  flex-shrink: 0; min-height: 68px;
 }
 .nav-btn {
   flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center;
   padding: 10px 4px; border: none; background: none; cursor: pointer;
-  font-size: 11px; color: var(--text-mid); font-weight: 600; gap: 3px;
-  transition: color 0.2s;
+  font-size: 14px; color: var(--text-light); font-weight: 700; gap: 4px;
+  transition: color 0.2s; min-height: 68px;
 }
-.nav-btn .nav-icon { font-size: 26px; }
+.nav-btn .nav-icon { font-size: 30px; }
 .nav-btn.active { color: var(--green-dark); }
 
 /* ─── MODAL OVERLAY ─── */
@@ -241,53 +245,58 @@ html, body {
 @keyframes slideUp { from{transform:translateY(80px);opacity:0} to{transform:translateY(0);opacity:1} }
 .modal-header { text-align: center; margin-bottom: 20px; }
 .modal-emoji { font-size: 56px; display: block; margin-bottom: 8px; }
-.modal-title { font-size: 26px; font-weight: 900; color: var(--text-dark); }
-.modal-sub { font-size: 16px; color: var(--text-mid); margin-top: 4px; }
+.modal-title { font-size: 28px; font-weight: 900; color: var(--text-dark); }
+.modal-sub { font-size: 18px; color: var(--text-mid); margin-top: 6px; }
 
 .exercise-info {
-  background: var(--warm-bg); border-radius: 16px; padding: 14px 16px;
-  margin-bottom: 16px;
+  background: var(--warm-bg); border-radius: 18px; padding: 16px 18px;
+  margin-bottom: 16px; border: 2px solid var(--card-border);
 }
-.exercise-name { font-size: 22px; font-weight: 900; color: var(--green-dark); margin-bottom: 6px; }
-.exercise-detail { font-size: 15px; color: var(--text-mid); line-height: 1.5; }
-.exercise-evidence {
-  font-size: 12px; color: var(--blue); margin-top: 8px;
-  background: #E3F2FD; border-radius: 8px; padding: 6px 10px;
+.exercise-name { font-size: 24px; font-weight: 900; color: var(--green-dark); margin-bottom: 8px; }
+.exercise-detail { font-size: 17px; color: var(--text-dark); line-height: 1.6; }
+/* 文獻引用欄隱藏 */
+.exercise-evidence { display: none; }
+
+/* 遊戲效益標籤（取代文獻） */
+.game-effect {
+  display: flex; align-items: center; gap: 10px;
+  background: #EDF5EC; border-radius: 12px; padding: 10px 14px;
+  margin-top: 10px; font-size: 16px; font-weight: 700; color: var(--green-dark);
 }
 
 .rep-display {
-  text-align: center; margin-bottom: 20px;
+  text-align: center; margin-bottom: 18px;
 }
 .rep-counter {
-  font-size: 72px; font-weight: 900; color: var(--green-dark);
-  line-height: 1; display: block;
+  font-size: 80px; font-weight: 900; color: var(--green-dark);
+  line-height: 1; display: block; transition: color 0.15s, transform 0.15s;
 }
-.rep-target { font-size: 18px; color: var(--text-mid); }
+.rep-target { font-size: 20px; color: var(--text-mid); font-weight: 700; }
 .rep-bar-wrap {
-  height: 16px; background: #E0E0E0; border-radius: 10px;
-  overflow: hidden; margin: 12px 0 6px;
+  height: 18px; background: var(--card-border); border-radius: 10px;
+  overflow: hidden; margin: 14px 0 6px;
 }
 .rep-bar-fill {
   height: 100%; background: linear-gradient(90deg, var(--green-mid), var(--green-dark));
-  border-radius: 10px; transition: width 0.2s;
+  border-radius: 10px; transition: width 0.25s;
 }
 
 .btn-rep {
   width: 100%; background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
   color: white; font-size: 22px; font-weight: 900;
-  padding: 18px; border-radius: 20px; border: none; cursor: pointer;
-  box-shadow: 0 5px 15px rgba(61,139,55,0.4);
-  transition: transform 0.1s; margin-bottom: 10px;
+  min-height: 60px; border-radius: 20px; border: none; cursor: pointer;
+  box-shadow: 0 5px 16px rgba(74,124,63,0.35);
+  transition: transform 0.1s; margin-bottom: 12px;
 }
 .btn-rep:active { transform: scale(0.97); }
 .btn-rep:disabled {
-  background: linear-gradient(135deg, var(--green-dark), #2D6B28);
-  cursor: default;
+  background: linear-gradient(135deg, #5A8A50, #3A6A30);
+  cursor: default; opacity: 0.8;
 }
 .btn-cancel {
-  width: 100%; background: #F5F5F5; color: var(--text-mid);
-  font-size: 18px; font-weight: 700; padding: 14px;
-  border-radius: 16px; border: none; cursor: pointer;
+  width: 100%; background: var(--warm-bg); color: var(--text-mid);
+  font-size: 18px; font-weight: 700; min-height: 52px;
+  border-radius: 16px; border: 2px solid var(--card-border); cursor: pointer;
 }
 
 /* ─── SHOP SCREEN ─── */
@@ -307,12 +316,12 @@ html, body {
 .shop-card.tier2 { border-color: #FFE082; }
 .shop-card.tier3 { border-color: #EF9A9A; }
 .shop-emoji { font-size: 40px; margin-bottom: 8px; display: block; }
-.shop-name { font-size: 16px; font-weight: 800; color: var(--text-dark); }
-.shop-info { font-size: 13px; color: var(--text-mid); margin: 4px 0; }
+.shop-name { font-size: 18px; font-weight: 800; color: var(--text-dark); }
+.shop-info { font-size: 15px; color: var(--text-mid); margin: 5px 0; }
 .shop-price {
   display: inline-flex; align-items: center; gap: 4px;
-  background: #FFF8E1; border-radius: 20px; padding: 5px 12px;
-  font-size: 16px; font-weight: 900; color: #E65100; margin-top: 8px;
+  background: #FFF3DC; border-radius: 20px; padding: 7px 14px;
+  font-size: 17px; font-weight: 900; color: var(--orange); margin-top: 10px;
 }
 .shop-tier-badge {
   position: absolute; top: 10px; right: 10px;
@@ -501,9 +510,8 @@ html, body {
 
   <button class="btn-start" onclick="startGame()">開始遊戲 🌱</button>
 
-  <div class="evidence-note">
-    依據 Tan et al. (2026)、Bae et al. (2025) 等肌少症實證處方設計<br>
-    每週 2–3 次 × 每次 30–40 分鐘 × 12 週課程
+  <div style="font-size:16px;color:rgba(255,255,255,0.88);text-align:center;max-width:340px;line-height:1.6">
+    每週運動 2–3 次，每次約 30 分鐘<br>完成 12 週，讓肌肉越來越強壯！
   </div>
 </div>
 
@@ -555,8 +563,8 @@ html, body {
       <div id="tasks-panel">
         <div class="section-title">📋 今日運動任務</div>
         <div class="task-list" id="task-list"></div>
-        <div style="font-size:12px;color:var(--text-mid);margin-top:8px;line-height:1.5">
-          💡 點擊農場格子開始運動任務，完成動作即可種植、澆水或採收作物！
+        <div style="font-size:16px;color:var(--text-mid);margin-top:10px;line-height:1.6">
+          👆 點農場的格子，就能開始運動！
         </div>
       </div>
     </div>
@@ -631,7 +639,7 @@ html, body {
     <div class="exercise-info">
       <div class="exercise-name" id="ex-name">深蹲</div>
       <div class="exercise-detail" id="ex-detail">雙腳與肩同寬，緩慢下蹲後起立，膝蓋不超過腳尖</div>
-      <div class="exercise-evidence" id="ex-evidence">📚 根據 Tan et al. (2026)：2–3 組 × 10–12 次，每週 2–3 次</div>
+      <div class="game-effect" id="ex-game-effect">🌱 完成後作物長大一格</div>
     </div>
 
     <!-- Mode Tabs -->
@@ -737,49 +745,39 @@ const CROPS = {
 
 const EXERCISES = {
   squat: {
-    name:'深蹲', emoji:'🏋️', color:'#3D8B37',
+    name:'深蹲', emoji:'🏋️', color:'#4A7C3F',
     action:'播種', actionEmoji:'🌱',
     desc:'雙腳與肩同寬，緩慢下蹲後起立\n膝蓋對齊腳尖，背部保持直立',
     repsBase:8, repsMax:12, sets:3,
-    evidence:'根據 Tan et al. (2026)：阻力訓練 2–3 組 × 10–12 次，強度 60–85% 1RM，每週 2–3 次效益最佳',
-    muscle:'下肢肌力（股四頭肌、臀肌）',
-    benefit:'深蹲播種 → 下肢基礎建立 → 功能性行動能力提升'
+    gameEffect:'🌱 每完成一下 → 種子往土裡扎根一點',
   },
   sitstand: {
-    name:'坐站', emoji:'🪑', color:'#1976D2',
+    name:'坐站', emoji:'🪑', color:'#2471A3',
     action:'澆水', actionEmoji:'💧',
     desc:'從椅子緩慢站起，再緩慢坐下\n動作控制，避免借力或墜落',
     repsBase:8, repsMax:12, sets:3,
-    evidence:'根據 Bae et al. (2025)：坐站訓練改善下肢功能，建議每組 8–12 次，採 30CST 評估進步',
-    muscle:'功能性下肢肌力（轉位能力）',
-    benefit:'坐站澆水 → 日常移位功能 → ADL 能力提升'
+    gameEffect:'💧 每完成一下 → 灑一桶水，作物更快長大',
   },
   sidestep: {
-    name:'側步走', emoji:'🚶', color:'#E65100',
+    name:'側步走', emoji:'🚶', color:'#D97C40',
     action:'除草', actionEmoji:'🌾',
-    desc:'橫向側步移動，保持重心穩定\n左右各為一次，注意骨盆水平',
+    desc:'橫向側步移動，保持重心穩定\n左右各算一下，注意骨盆水平',
     repsBase:10, repsMax:15, sets:3,
-    evidence:'根據 Shen et al. (2023)：複合訓練（阻力+平衡）效益優於單一訓練，側步改善動態平衡',
-    muscle:'臀中肌、動態平衡能力',
-    benefit:'側步除草 → 動態平衡控制 → 跌倒風險降低'
+    gameEffect:'🌾 每完成一下 → 除掉一株雜草，作物呼吸順暢',
   },
   singleleg: {
-    name:'單腳站', emoji:'🦩', color:'#7B1FA2',
+    name:'單腳站', emoji:'🦩', color:'#6C3483',
     action:'施肥', actionEmoji:'✨',
     desc:'單腳站立 10 秒，換腳重複\n手可輕扶支撐物確保安全',
     repsBase:5, repsMax:10, sets:2,
-    evidence:'根據 Bae et al. (2025)：靜態平衡訓練建議單腳站 10 秒，目標 SPPB 平衡分項達滿分',
-    muscle:'靜態平衡、踝關節穩定',
-    benefit:'單腳站施肥 → 靜態平衡建立 → 跌倒預防'
+    gameEffect:'✨ 每站穩一次 → 施一次肥，加速作物成長',
   },
   grip: {
-    name:'握力訓練', emoji:'✊', color:'#B71C1C',
+    name:'握力訓練', emoji:'✊', color:'#C0392B',
     action:'採收', actionEmoji:'🧺',
-    desc:'緊握後放鬆，感受肌肉用力\n可使用軟球或毛巾輔助',
+    desc:'緊握後放鬆，感受手掌用力\n可握軟球或捏毛巾輔助',
     repsBase:5, repsMax:8, sets:3,
-    evidence:'根據 Li et al. (2025)：握力訓練建議 3 組 × 5–8 次，最佳負荷約個人 49% 1RM，顯著改善握力',
-    muscle:'前臂肌群、握力（上肢功能指標）',
-    benefit:'握力採收 → 上肢功能性力量 → Handgrip 指標改善'
+    gameEffect:'🧺 每完成一下 → 採下一顆成熟的果實',
   },
 };
 
@@ -938,7 +936,8 @@ function renderFarmGrid() {
 function renderTaskList() {
   const list = document.getElementById('task-list');
   if (!list) return;
-  const tasks = getWeeklyExercises();
+  // 只顯示前 3 項，避免清單過長
+  const tasks = getWeeklyExercises().slice(0, 3);
   list.innerHTML = '';
   tasks.forEach(t => {
     const ex = EXERCISES[t.id];
@@ -947,8 +946,8 @@ function renderTaskList() {
     div.className = 'task-item' + (done ? ' done' : '');
     div.innerHTML = `
       <div class="task-dot" style="background:${ex.color}"></div>
-      <div class="task-text">${ex.emoji} ${t.label}</div>
-      <div class="task-reps">${t.sets}組×${t.reps}下</div>
+      <div class="task-text">${ex.emoji} ${ex.name}</div>
+      <div class="task-reps">${t.sets}×${t.reps}下</div>
       <div class="task-check">${done ? '✅' : '⬜'}</div>
     `;
     list.appendChild(div);
@@ -1047,14 +1046,11 @@ function renderProgress() {
       </div>
     </div>
     <div class="prog-card">
-      <div class="prog-card-title">🔬 實證處方對照</div>
+      <div class="prog-card-title">🎯 本週目標</div>
       <div class="stat-row"><span class="stat-label">訓練頻率</span><span class="stat-value">每週 2–3 次</span></div>
-      <div class="stat-row"><span class="stat-label">訓練強度</span><span class="stat-value">60–85% 1RM</span></div>
-      <div class="stat-row"><span class="stat-label">每次時間</span><span class="stat-value">${phase===1?'30':phase===2?'35':'40'} 分鐘</span></div>
-      <div class="stat-row"><span class="stat-label">組數×次數</span><span class="stat-value">${phase===1?'2組×8-10':'phase'===2?'3組×10-12':'3組×10-12'} 次</span></div>
-      <div style="font-size:12px;color:var(--text-mid);margin-top:8px;line-height:1.6">
-        📚 參考文獻：Tan et al. (2026)・Bae et al. (2025)・Li et al. (2025)・Shen et al. (2023)
-      </div>
+      <div class="stat-row"><span class="stat-label">每次時間</span><span class="stat-value">約 ${phase===1?'30':phase===2?'35':'40'} 分鐘</span></div>
+      <div class="stat-row"><span class="stat-label">組數 × 次數</span><span class="stat-value">${phase===1?'2 組 × 8–10':'3 組 × 10–12'} 下</span></div>
+      <div class="stat-row"><span class="stat-label">完成可獲得</span><span class="stat-value">🪙 農金幣 + 作物成長</span></div>
     </div>
   `;
 }
@@ -1146,7 +1142,7 @@ function openExerciseModal(ex, actionType) {
   document.getElementById('modal-sub').textContent = `${ex.name} → ${ex.action}`;
   document.getElementById('ex-name').textContent = ex.name;
   document.getElementById('ex-detail').textContent = ex.desc;
-  document.getElementById('ex-evidence').textContent = `📚 ${ex.evidence}`;
+  document.getElementById('ex-game-effect').textContent = ex.gameEffect || '';
   document.getElementById('rep-counter').textContent = '0';
   document.getElementById('rep-target').textContent = `目標：${reps} 下`;
   document.getElementById('rep-bar').style.width = '0%';
