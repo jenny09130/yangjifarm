@@ -1,0 +1,7 @@
+# 排除解壓縮的暫存資料夾
+extracted_*/
+
+# 系統檔
+.DS_Store
+Thumbs.db
+desktop.ini

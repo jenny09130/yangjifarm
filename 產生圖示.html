@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>產生養肌農場圖示</title></head>
+<body style="font-family:sans-serif;padding:32px;background:#f0f0f0">
+<h2>🌾 養肌農場 — 圖示產生器</h2>
+<p>點下方按鈕，自動下載 192×192 和 512×512 兩個 PNG 圖示檔。<br>
+將下載的 icon-192.png 和 icon-512.png 放到與 養肌農場.html 相同的資料夾。</p>
+<button onclick="generateIcons()" style="font-size:18px;padding:12px 28px;background:#3D8B37;color:white;border:none;border-radius:12px;cursor:pointer;margin-top:12px">
+  📥 產生並下載圖示
+</button>
+<div id="preview" style="margin-top:20px;display:flex;gap:16px;flex-wrap:wrap"></div>
+<script>
+function drawIcon(size) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const r = size * 0.18;
+
+  // Background rounded rect
+  ctx.fillStyle = '#3D8B37';
+  roundRect(ctx, 0, 0, size, size, size * 0.22);
+  ctx.fill();
+
+  // Inner lighter circle
+  ctx.fillStyle = '#5CB85C';
+  ctx.beginPath();
+  ctx.arc(size/2, size/2, size*0.38, 0, Math.PI*2);
+  ctx.fill();
+
+  // Wheat emoji text
+  ctx.font = `${size * 0.5}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🌾', size/2, size/2);
+
+  return c;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function generateIcons() {
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  [192, 512].forEach(size => {
+    const canvas = drawIcon(size);
+    const a = document.createElement('a');
+    a.download = `icon-${size}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+
+    // 顯示預覽
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'text-align:center;background:white;padding:12px;border-radius:12px';
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL();
+    img.style.cssText = `width:${Math.min(size, 96)}px;height:${Math.min(size, 96)}px;border-radius:12px;display:block`;
+    wrap.appendChild(img);
+    wrap.innerHTML += `<div style="margin-top:6px;font-size:13px">icon-${size}.png</div>`;
+    preview.appendChild(wrap);
+  });
+  setTimeout(() => {
+    document.querySelector('p').innerHTML += '<br><strong style="color:green">✅ 已下載！請將兩個 PNG 檔放到遊戲同一資料夾。</strong>';
+  }, 500);
+}
+</script>
+</body></html>
