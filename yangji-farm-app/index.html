@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2f7d54" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="養肌農場" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>養肌農場 | 社區高齡者肌少症預防 App</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./assets/app-icon-180.png" />
+    <link rel="icon" href="./assets/app-icon-192.png" />
+    <link rel="stylesheet" href="./styles.css?v=20260625-hero" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <button class="brand-button" id="openOutcome" aria-label="查看成果總覽">
+          <img src="./assets/app-icon-512.png" alt="" />
+          <span>
+            <span class="eyebrow">社區高齡者肌少症預防 App</span>
+            <strong>養肌農場</strong>
+            <span class="pilot-label">MVP 試辦版 | 點 Logo 看成果</span>
+          </span>
+        </button>
+        <button class="icon-button" id="openSafety" title="安全提醒" aria-label="安全提醒">
+          <span aria-hidden="true">!</span>
+        </button>
+      </header>
+
+      <main class="main-grid">
+        <section class="welcome-panel" aria-labelledby="welcomeTitle">
+          <div class="welcome-art" aria-hidden="true">
+            <img id="welcomeHeroImage" src="./assets/hero-male.png" alt="" />
+            <div class="welcome-brand">
+              <div class="welcome-mark">🌱</div>
+              <h1 id="welcomeTitle">養肌農場</h1>
+              <p>每天動一動，種出健康與力量</p>
+            </div>
+          </div>
+          <div class="welcome-actions">
+            <button class="primary-button welcome-button" id="welcomeStart">開始耕耘</button>
+            <button class="secondary-button welcome-button" id="welcomeLearn">了解更多</button>
+          </div>
+        </section>
+
+        <section class="garden-panel" aria-labelledby="gardenTitle">
+          <div class="game-home">
+            <div class="game-hud" aria-label="今日狀態">
+              <div>
+                <span>今日</span>
+                <strong id="todayDone">0/0</strong>
+              </div>
+              <div>
+                <span>本週</span>
+                <strong id="weekDays">0</strong>
+              </div>
+              <div>
+                <span>安全</span>
+                <strong id="safetyMode">A</strong>
+              </div>
+            </div>
+            <div class="garden-visual game-scene" aria-label="菜園成長狀態">
+              <div id="farmCharacterPreview" class="farm-character-preview"></div>
+              <img src="./assets/farm-field.svg" alt="" />
+              <div class="growth-meter">
+                <span>作物</span>
+                <strong id="growthPercent">0%</strong>
+              </div>
+            </div>
+            <div class="mission-panel">
+              <p class="section-kicker">今日農務</p>
+              <h2 id="gardenTitle">準備菜園中...</h2>
+              <p id="todaySummary">按播放，App 會用語音說明。</p>
+              <div class="mission-chips" aria-label="任務提示">
+                <span id="missionTool">工具</span>
+                <span id="missionCount">次數</span>
+                <span id="missionHint">慢慢做</span>
+              </div>
+              <div class="game-actions">
+                <button class="primary-button game-button" id="startToday">開始</button>
+                <button class="secondary-button game-button" id="speakToday">播放</button>
+                <button class="secondary-button game-button" id="restToday">休息</button>
+                <button class="secondary-button game-button" id="installApp">安裝</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-panel">
+          <nav class="tabs" aria-label="主要分頁">
+            <button class="tab active" data-tab="tasks">今日任務</button>
+            <button class="tab" data-tab="harvest">我的收成</button>
+            <button class="tab" data-tab="records">健康紀錄</button>
+            <button class="tab" data-tab="caregiver">照護者</button>
+            <button class="tab" data-tab="settings">設定</button>
+          </nav>
+
+          <div class="tab-view active" id="tasksView">
+            <div class="section-heading">
+              <div>
+                <p class="section-kicker">Evidence Tasks</p>
+                <h2>依實證安排的今日任務</h2>
+              </div>
+              <button class="text-button" id="refreshTasks">為什麼簡化？</button>
+            </div>
+            <div class="plain-panel evidence-summary" id="evidenceSummary"></div>
+            <div class="task-list" id="taskList"></div>
+          </div>
+
+          <div class="tab-view" id="harvestView">
+            <div class="section-heading">
+              <div>
+                <p class="section-kicker">Harvest</p>
+                <h2>我的收成</h2>
+              </div>
+            </div>
+            <div class="resource-grid" id="resourceGrid"></div>
+            <div class="plain-panel">
+              <h3>圖鑑</h3>
+              <p>完成任務會讓菜園成長；沒有完成不會枯萎、不扣分，也不排名。</p>
+              <div class="badge-row" id="cropBadges"></div>
+            </div>
+          </div>
+
+          <div class="tab-view" id="recordsView">
+            <div class="section-heading">
+              <div>
+                <p class="section-kicker">Records</p>
+                <h2>健康紀錄</h2>
+              </div>
+            </div>
+            <div class="plain-panel profile-summary" id="profileSummary"></div>
+            <div class="record-grid">
+              <label>
+                測量日期
+                <input id="measureDateInput" type="date" />
+              </label>
+              <label>
+                慣用手
+                <select id="dominantHandInput">
+                  <option value="">未記錄</option>
+                  <option value="right">右手</option>
+                  <option value="left">左手</option>
+                </select>
+              </label>
+              <label>
+                右手握力 kg
+                <input id="gripRightInput" type="number" inputmode="decimal" min="0" step="0.1" />
+              </label>
+              <label>
+                左手握力 kg
+                <input id="gripLeftInput" type="number" inputmode="decimal" min="0" step="0.1" />
+              </label>
+              <label>
+                小腿圍 cm
+                <input id="calfInput" type="number" inputmode="decimal" min="0" step="0.1" />
+              </label>
+              <label>
+                5 次坐站秒數
+                <input id="standInput" type="number" inputmode="decimal" min="0" step="0.1" />
+              </label>
+              <label class="full-row">
+                測量備註
+                <input id="measureNoteInput" type="text" maxlength="50" placeholder="例如：右手痠痛、剛運動後、社區據點測量" />
+              </label>
+              <button class="primary-button" id="saveMeasure">儲存基礎數據</button>
+            </div>
+            <div class="timeline" id="recordTimeline"></div>
+            <div class="plain-panel action-panel">
+              <h3>試辦資料</h3>
+              <p>匯出資料可交給社區據點或研究人員彙整；檔案只包含此裝置上的紀錄。</p>
+              <div class="hero-actions">
+                <button class="secondary-button" id="exportCsv">匯出 CSV</button>
+                <button class="secondary-button" id="exportJson">備份 JSON</button>
+                <button class="text-button" id="printReport">列印週報</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-view" id="caregiverView">
+            <div class="section-heading">
+              <div>
+                <p class="section-kicker">Caregiver</p>
+                <h2>照護者摘要</h2>
+              </div>
+            </div>
+            <div class="care-summary" id="careSummary"></div>
+            <div class="plain-panel">
+              <h3>照護者提醒文字</h3>
+              <p id="careMessage">目前沒有需要通知的事件。</p>
+              <button class="secondary-button" id="copyCareMessage">複製提醒文字</button>
+            </div>
+          </div>
+
+          <div class="tab-view" id="settingsView">
+            <div class="section-heading">
+              <div>
+                <p class="section-kicker">Settings</p>
+                <h2>我的設定</h2>
+              </div>
+            </div>
+            <div class="settings-grid">
+              <label>
+                使用者暱稱
+                <input id="nameInput" type="text" maxlength="12" />
+              </label>
+              <label>
+                性別
+                <select id="sexInput">
+                  <option value="">未填寫</option>
+                  <option value="female">女</option>
+                  <option value="male">男</option>
+                  <option value="other">其他</option>
+                  <option value="undisclosed">不透露</option>
+                </select>
+              </label>
+              <label>
+                年齡
+                <input id="ageInput" type="number" inputmode="numeric" min="40" max="110" />
+              </label>
+              <label>
+                身高 cm
+                <input id="heightInput" type="number" inputmode="decimal" min="100" max="220" step="0.1" />
+              </label>
+              <label>
+                體重 kg
+                <input id="weightInput" type="number" inputmode="decimal" min="25" max="180" step="0.1" />
+              </label>
+              <label>
+                安全模式
+                <select id="tierInput">
+                  <option value="A">A 健康預防組</option>
+                  <option value="B">B 風險提醒組</option>
+                  <option value="C">C 專業協助組</option>
+                </select>
+              </label>
+              <label>
+                提醒時間
+                <input id="remindInput" type="time" />
+              </label>
+              <label>
+                照護者聯絡方式
+                <input id="careContactInput" type="text" maxlength="40" />
+              </label>
+              <label>
+                據點/試辦代碼
+                <input id="siteInput" type="text" maxlength="20" placeholder="例如 A01" />
+              </label>
+              <label class="toggle-row">
+                <input id="largeTextInput" type="checkbox" />
+                使用特大字體
+              </label>
+              <label class="toggle-row">
+                <input id="voiceEnabledInput" type="checkbox" />
+                啟用國語聲音說明
+              </label>
+              <label>
+                語音速度
+                <select id="voiceRateInput">
+                  <option value="slow">慢速</option>
+                  <option value="normal">普通</option>
+                </select>
+              </label>
+              <fieldset class="full-row character-customizer">
+                <legend>角色裝扮</legend>
+                <div id="settingsCharacterPreview" class="character-preview"></div>
+                <div class="character-options">
+                  <label>
+                    臉型
+                    <select id="profileFaceInput">
+                      <option value="round">圓臉</option>
+                      <option value="gentle">溫和臉</option>
+                      <option value="long">長臉</option>
+                      <option value="square">方臉</option>
+                    </select>
+                  </label>
+                  <label>
+                    衣服
+                    <select id="profileOutfitInput">
+                      <option value="overalls">農夫吊帶褲</option>
+                      <option value="sport">運動背心</option>
+                      <option value="apron">菜園圍裙</option>
+                      <option value="vest">暖色背心</option>
+                    </select>
+                  </label>
+                  <label>
+                    帽子
+                    <select id="profileHatInput">
+                      <option value="straw">草帽</option>
+                      <option value="cap">遮陽帽</option>
+                      <option value="towel">毛巾頭巾</option>
+                      <option value="none">不戴帽</option>
+                    </select>
+                  </label>
+                </div>
+              </fieldset>
+              <fieldset class="full-row">
+                <legend>慢性病與健康背景</legend>
+                <label><input type="checkbox" name="profileCondition" value="高血壓" data-risk="low" /> 高血壓</label>
+                <label><input type="checkbox" name="profileCondition" value="糖尿病" data-risk="moderate" /> 糖尿病</label>
+                <label><input type="checkbox" name="profileCondition" value="心臟病" data-risk="high" /> 心臟病</label>
+                <label><input type="checkbox" name="profileCondition" value="中風病史" data-risk="moderate" /> 中風病史</label>
+                <label><input type="checkbox" name="profileCondition" value="慢性腎臟病" data-risk="moderate" /> 慢性腎臟病</label>
+                <label><input type="checkbox" name="profileCondition" value="骨質疏鬆" data-risk="moderate" /> 骨質疏鬆</label>
+                <label><input type="checkbox" name="profileCondition" value="關節炎或膝髖疼痛" data-risk="moderate" /> 關節炎 / 膝痛 / 髖痛</label>
+                <label><input type="checkbox" name="profileCondition" value="慢性肺病或氣喘" data-risk="moderate" /> 慢性肺病 / 氣喘 / COPD</label>
+                <label><input type="checkbox" name="profileCondition" value="無上述慢性病" data-risk="none" /> 無上述慢性病</label>
+                <label class="full-row">
+                  其他
+                  <input id="otherConditionInput" type="text" maxlength="40" placeholder="可自行填寫其他病史或健康狀況" />
+                </label>
+              </fieldset>
+              <button class="primary-button" id="saveSettings">儲存設定</button>
+              <button class="danger-button" id="resetData">重設原型資料</button>
+            </div>
+            <div class="plain-panel action-panel">
+              <h3>社區長者名冊</h3>
+              <p id="activeParticipantLabel">目前尚未建立長者資料。</p>
+              <div class="participant-list" id="participantList"></div>
+              <div class="record-grid roster-form">
+                <label>
+                  新增長者暱稱
+                  <input id="newParticipantName" type="text" maxlength="12" placeholder="例如 王阿姨" />
+                </label>
+                <button class="secondary-button" id="addParticipant">新增並切換</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="onboardingDialog" class="modal wide-modal">
+      <form method="dialog" class="modal-body" id="onboardingForm">
+        <p class="section-kicker">首次建立個人檔案</p>
+        <h2>先認識你的養肌起點</h2>
+        <p>這些資料只儲存在本機裝置，用來安排安全、簡單、適合的養肌任務。握力資料可先空白，之後使用握力器測量後再補登。</p>
+        <div class="onboarding-grid">
+          <label>
+            暱稱或姓名
+            <input id="onboardName" type="text" maxlength="12" placeholder="例如：阿明" />
+          </label>
+          <label>
+            性別
+            <select id="onboardSex">
+              <option value="">未填寫</option>
+              <option value="female">女</option>
+              <option value="male">男</option>
+              <option value="other">其他</option>
+              <option value="undisclosed">不透露</option>
+            </select>
+          </label>
+          <label>
+            年齡
+            <input id="onboardAge" type="number" inputmode="numeric" min="40" max="110" placeholder="例如：72" />
+          </label>
+          <label>
+            身高 cm（選填）
+            <input id="onboardHeight" type="number" inputmode="decimal" min="100" max="220" step="0.1" />
+          </label>
+          <label>
+            體重 kg（選填）
+            <input id="onboardWeight" type="number" inputmode="decimal" min="25" max="180" step="0.1" />
+          </label>
+          <label>
+            慣用手（握力基礎資料）
+            <select id="onboardDominantHand">
+              <option value="">之後再填</option>
+              <option value="right">右手</option>
+              <option value="left">左手</option>
+            </select>
+          </label>
+        </div>
+        <fieldset class="character-customizer">
+          <legend>選擇你的養肌小農</legend>
+          <div id="onboardCharacterPreview" class="character-preview"></div>
+          <div class="character-options">
+            <label>
+              臉型
+              <select id="onboardFaceInput">
+                <option value="round">圓臉</option>
+                <option value="gentle">溫和臉</option>
+                <option value="long">長臉</option>
+                <option value="square">方臉</option>
+              </select>
+            </label>
+            <label>
+              衣服
+              <select id="onboardOutfitInput">
+                <option value="overalls">農夫吊帶褲</option>
+                <option value="sport">運動背心</option>
+                <option value="apron">菜園圍裙</option>
+                <option value="vest">暖色背心</option>
+              </select>
+            </label>
+            <label>
+              帽子
+              <select id="onboardHatInput">
+                <option value="straw">草帽</option>
+                <option value="cap">遮陽帽</option>
+                <option value="towel">毛巾頭巾</option>
+                <option value="none">不戴帽</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>慢性病與健康背景</legend>
+          <label><input type="checkbox" name="onboardCondition" value="高血壓" data-risk="low" /> 高血壓</label>
+          <label><input type="checkbox" name="onboardCondition" value="糖尿病" data-risk="moderate" /> 糖尿病</label>
+          <label><input type="checkbox" name="onboardCondition" value="心臟病" data-risk="high" /> 心臟病</label>
+          <label><input type="checkbox" name="onboardCondition" value="中風病史" data-risk="moderate" /> 中風病史</label>
+          <label><input type="checkbox" name="onboardCondition" value="慢性腎臟病" data-risk="moderate" /> 慢性腎臟病</label>
+          <label><input type="checkbox" name="onboardCondition" value="骨質疏鬆" data-risk="moderate" /> 骨質疏鬆</label>
+          <label><input type="checkbox" name="onboardCondition" value="關節炎或膝髖疼痛" data-risk="moderate" /> 關節炎 / 膝痛 / 髖痛</label>
+          <label><input type="checkbox" name="onboardCondition" value="慢性肺病或氣喘" data-risk="moderate" /> 慢性肺病 / 氣喘 / COPD</label>
+          <label><input type="checkbox" name="onboardCondition" value="無上述慢性病" data-risk="none" /> 無上述慢性病</label>
+          <label class="full-row">
+            其他
+            <input id="onboardOtherCondition" type="text" maxlength="40" placeholder="可自行填寫其他病史或健康狀況" />
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>運動安全提醒</legend>
+          <label><input type="checkbox" name="screeningIssue" value="無" data-risk="none" /> 無</label>
+          <label><input type="checkbox" name="screeningIssue" value="近期跌倒" data-risk="moderate" /> 近期曾跌倒</label>
+          <label><input type="checkbox" name="screeningIssue" value="常頭暈或站不穩" data-risk="moderate" /> 常頭暈或站不穩</label>
+          <label><input type="checkbox" name="screeningIssue" value="胸悶、心悸或喘不過氣" data-risk="high" /> 有胸悶、心悸或運動會喘不過氣</label>
+          <label><input type="checkbox" name="screeningIssue" value="近期手術、骨折或急性疼痛" data-risk="high" /> 近期手術、骨折或急性疼痛</label>
+          <label><input type="checkbox" name="screeningIssue" value="醫師限制運動" data-risk="high" /> 醫師曾限制運動</label>
+          <label><input type="checkbox" name="screeningIssue" value="使用拐杖或助行器" data-risk="moderate" /> 走路需要拐杖、助行器或他人協助</label>
+        </fieldset>
+        <fieldset>
+          <legend>若沒有高風險狀況，預設使用模式</legend>
+          <label><input type="radio" name="onboardTier" value="A" checked /> A 健康預防組</label>
+          <label><input type="radio" name="onboardTier" value="B" /> B 風險提醒組</label>
+          <label><input type="radio" name="onboardTier" value="C" /> C 專業協助組</label>
+        </fieldset>
+        <div class="modal-actions">
+          <button class="secondary-button" value="confirm">先略過握力，開始使用</button>
+          <button class="primary-button" value="confirm">儲存並開始使用</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="safetyDialog" class="modal">
+      <form method="dialog" class="modal-body" id="safetyForm">
+        <p class="section-kicker">任務前安全確認</p>
+        <h2 id="safetyTaskTitle">開始前先確認身體狀態</h2>
+        <div class="check-list">
+          <label><input type="checkbox" name="safetyIssue" value="胸悶、心悸或喘不過氣" /> 今天有胸悶、心悸或喘不過氣</label>
+          <label><input type="checkbox" name="safetyIssue" value="頭暈、站不穩或快跌倒" /> 今天有頭暈、站不穩或快跌倒</label>
+          <label><input type="checkbox" name="safetyIssue" value="明顯疼痛或身體很不舒服" /> 今天有明顯疼痛或身體很不舒服</label>
+          <label><input type="checkbox" name="safetyIssue" value="剛跌倒或不適合運動" /> 今天剛跌倒或覺得不適合運動</label>
+        </div>
+        <div class="modal-actions">
+          <button class="secondary-button" id="safetyRest" value="cancel">有一項，今天先休息</button>
+          <button class="primary-button" id="safetyPass" value="confirm">都沒有，開始</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="taskDialog" class="modal wide-modal">
+      <div class="modal-body">
+        <button class="close-button" id="closeTask" aria-label="關閉">×</button>
+        <p class="section-kicker" id="taskTypeLabel">任務</p>
+        <h2 id="taskTitle">任務名稱</h2>
+        <p id="taskPurpose"></p>
+        <div class="task-demo">
+          <img src="./assets/chair-exercise.svg" alt="" />
+          <ol id="taskSteps"></ol>
+        </div>
+        <div class="notice-box" id="taskSafety"></div>
+        <div class="notice-box evidence-box" id="taskPrescription"></div>
+        <div class="task-target" id="taskTarget"></div>
+        <div class="modal-actions">
+          <button class="secondary-button" id="speakTask" type="button">播放說明</button>
+          <button class="secondary-button" id="pauseTask">暫停</button>
+          <button class="danger-button" id="reportDiscomfort">我不舒服</button>
+          <button class="primary-button" id="completeTask">完成任務</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="discomfortDialog" class="modal">
+      <form method="dialog" class="modal-body" id="discomfortForm">
+        <p class="section-kicker">不適回報</p>
+        <h2>請選擇目前狀況</h2>
+        <div class="option-grid" id="discomfortOptions"></div>
+        <label>
+          備註
+          <textarea id="discomfortNote" rows="3"></textarea>
+        </label>
+        <button class="danger-button" value="confirm">停止今日任務並記錄</button>
+      </form>
+    </dialog>
+
+    <dialog id="outcomeDialog" class="modal wide-modal">
+      <div class="modal-body">
+        <button class="close-button" id="closeOutcome" aria-label="關閉">×</button>
+        <p class="section-kicker">成果總覽</p>
+        <h2 id="outcomeTitle">我的養肌成果</h2>
+        <p id="outcomeSummary">正在整理成果...</p>
+        <div class="outcome-grid" id="outcomeGrid"></div>
+        <div class="plain-panel">
+          <h3>最近成果</h3>
+          <div class="timeline compact-timeline" id="outcomeTimeline"></div>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="installDialog" class="modal wide-modal">
+      <div class="modal-body">
+        <button class="close-button" id="closeInstallGuide" aria-label="關閉">×</button>
+        <p class="section-kicker">手機安裝</p>
+        <h2>把養肌農場加入手機主畫面</h2>
+        <div class="install-grid">
+          <div class="plain-panel">
+            <h3>Android / Chrome</h3>
+            <ol>
+              <li>用 Chrome 開啟正式網址。</li>
+              <li>按「安裝到手機」或瀏覽器選單。</li>
+              <li>選擇「安裝應用程式」或「加入主畫面」。</li>
+              <li>主畫面會出現養肌農場圖示。</li>
+            </ol>
+          </div>
+          <div class="plain-panel">
+            <h3>iPhone / Safari</h3>
+            <ol>
+              <li>用 Safari 開啟正式網址。</li>
+              <li>按下方分享按鈕。</li>
+              <li>選擇「加入主畫面」。</li>
+              <li>確認名稱為「養肌農場」後加入。</li>
+            </ol>
+          </div>
+        </div>
+        <div class="notice-box">
+          正式安裝需要 HTTPS 網址。目前本機網址可測試畫面；要讓多支手機穩定安裝，下一步要部署到 HTTPS。
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="aboutDialog" class="modal wide-modal">
+      <div class="modal-body">
+        <button class="close-button" id="closeAbout" aria-label="關閉">×</button>
+        <p class="section-kicker">關於養肌農場</p>
+        <h2>把實證運動變成每日農場任務</h2>
+        <div class="about-grid">
+          <div class="plain-panel">
+            <h3>適合長者</h3>
+            <p>使用大按鈕、清楚文字與語音說明，任務以坐站、步行、扶椅平衡與蛋白質紀錄為主。</p>
+          </div>
+          <div class="plain-panel">
+            <h3>實證基礎</h3>
+            <p>依據你的運動處方資料，將阻力訓練、平衡訓練、有氧活動與營養協同轉成簡單任務。</p>
+          </div>
+          <div class="plain-panel">
+            <h3>安全優先</h3>
+            <p>若有胸悶、頭暈、明顯疼痛、剛跌倒或醫師限制運動，請先停止並詢問專業人員。</p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>

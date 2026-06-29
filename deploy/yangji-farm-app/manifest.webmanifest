@@ -1,0 +1,27 @@
+{
+  "name": "養肌農場",
+  "short_name": "養肌農場",
+  "description": "社區高齡者肌少症預防 App MVP",
+  "start_url": "./index.html",
+  "id": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4fbef",
+  "theme_color": "#20b9e6",
+  "lang": "zh-Hant",
+  "icons": [
+    {
+      "src": "./assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

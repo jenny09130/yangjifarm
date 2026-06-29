@@ -1,7 +1,16 @@
-# 排除解壓縮的暫存資料夾
+# Extracted temporary folders
 extracted_*/
 
-# 系統檔
+# System files
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local runtime files
+*.log
+*.pid
+~$*
+deploy/*.zip
+yangji-farm-app/server.err.log
+yangji-farm-app/server.out.log
+yangji-farm-app/server.pid

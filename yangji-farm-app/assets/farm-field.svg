@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" role="img" aria-labelledby="title desc">
+  <title id="title">養肌農場菜園</title>
+  <desc id="desc">一塊有田畦、菜苗與日光的簡化菜園插圖</desc>
+  <rect width="520" height="300" rx="18" fill="#d8ead0"/>
+  <circle cx="442" cy="58" r="38" fill="#f4b942"/>
+  <path d="M0 118 C76 86 140 98 214 125 C290 154 362 130 520 96 L520 300 L0 300 Z" fill="#9fc77c"/>
+  <path d="M30 238 C120 194 214 184 318 204 C382 216 444 206 500 182 L520 300 L0 300 Z" fill="#8a5a38"/>
+  <g fill="none" stroke="#6d432a" stroke-width="8" stroke-linecap="round">
+    <path d="M78 265 C162 226 256 218 356 236"/>
+    <path d="M156 282 C232 244 326 240 424 258"/>
+    <path d="M18 294 C102 260 198 250 304 270"/>
+  </g>
+  <g>
+    <path d="M135 202 C119 188 116 166 137 154 C152 169 153 190 135 202Z" fill="#2f7d54"/>
+    <path d="M143 204 C161 190 165 170 149 154 C132 170 127 190 143 204Z" fill="#3f9b64"/>
+    <path d="M136 212 L144 212 L140 230 Z" fill="#1e5c3b"/>
+  </g>
+  <g transform="translate(126 46)">
+    <path d="M88 164 C72 150 70 129 90 118 C105 132 107 152 88 164Z" fill="#2f7d54"/>
+    <path d="M96 166 C116 152 118 132 104 117 C86 134 82 153 96 166Z" fill="#3f9b64"/>
+    <path d="M88 176 L98 176 L93 196 Z" fill="#1e5c3b"/>
+  </g>
+  <g transform="translate(262 36)">
+    <path d="M92 168 C74 152 72 130 92 118 C110 134 111 154 92 168Z" fill="#2f7d54"/>
+    <path d="M100 169 C120 154 123 132 108 118 C90 134 85 156 100 169Z" fill="#3f9b64"/>
+    <path d="M92 180 L102 180 L97 202 Z" fill="#1e5c3b"/>
+  </g>
+  <rect x="44" y="48" width="176" height="54" rx="8" fill="#ffffff" opacity=".88"/>
+  <text x="62" y="82" font-family="Microsoft JhengHei, Arial" font-size="22" font-weight="700" fill="#1e5c3b">完成一點，就長一點</text>
+</svg>
