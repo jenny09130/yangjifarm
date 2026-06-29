@@ -29,7 +29,7 @@ Get-ChildItem -LiteralPath $AppDir -Force |
   Where-Object { $LocalOnlyFiles -notcontains $_.Name } |
   Copy-Item -Destination $DeployDir -Recurse -Force
 
-git add .gitignore UPDATE_WORKFLOW.md netlify.toml .github/workflows/deploy-pages.yml scripts/publish-update.ps1 yangji-farm-app deploy/yangji-farm-app
+git add .gitignore UPDATE_WORKFLOW.md index.html netlify.toml .github/workflows/deploy-pages.yml scripts/publish-update.ps1 yangji-farm-app deploy/yangji-farm-app
 
 $Pending = git diff --cached --name-only
 if (-not $Pending) {

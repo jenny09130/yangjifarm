@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "yangji-farm-v20260629110437";
+﻿const CACHE_NAME = "yangji-farm-v20260629152950";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -57,4 +57,5 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
 });
+
 

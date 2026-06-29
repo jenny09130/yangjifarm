@@ -15,6 +15,8 @@ GitHub Pages 網址通常會是：
 https://jenny09130.github.io/yangjifarm/
 ```
 
+根目錄的 `index.html` 會自動導到 `yangji-farm-app/index.html`，所以即使 GitHub Pages 暫時使用 branch root 發布，網址也能正常打開 app。
+
 ### Netlify
 
 1. 在 Netlify 選 `Add new site` -> `Import an existing project`
